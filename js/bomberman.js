@@ -9,13 +9,13 @@ var intervalId = 0;
 
 // Bomberman
 var length = 40;
-var x = 4*length;
-var y = 4*length;
+var x = length;
+var y = length;
 var dx = 2;
 var dy = 4;
 
 // Board
-var board = []
+var board;
 
 // Frame
 var frame = 0;
@@ -26,6 +26,9 @@ var sprite_width = 12;
 var sprite_height = 18;
 var toggle = false;
 var stand = true;
+
+// Bomb
+var bomb = false;
 
 // Grid
 var grid_height = 10;
@@ -64,6 +67,8 @@ function init() {
     // Disable smoothness for pixelated effect
     ctx.webkitImageSmoothingEnabled = false;
 
+    // Load level map
+    board = level1;
 }
 
 // JQuery
@@ -83,6 +88,9 @@ function onKeyDown(evt) {
             break;
         case 40:
             down = true;
+            break;
+        case 32:
+            bomb = true;
             break;
         default:
             break;
@@ -104,26 +112,46 @@ function update() {
     // Update block position
     if (left | up | right | down)
         toggle = true;
-    if (left) x -= length;
-    if (up) y -= length;
-    if (right) x += length;
-    if (down) y += length;
+
+    if (left) {
+        x -= length;
+        if (board[y/length][x/length] == 1)
+            x += length;
+    }
+    if (up) {
+        y -= length;
+        if (board[y/length][x/length] == 1)
+            y += length;
+    }
+    if (right) {
+        x += length;
+        if (board[y/length][x/length] == 1)
+            x -= length;
+    }
+    if (down) {
+        y += length;
+        if (board[y/length][x/length] == 1)
+            y -= length;
+    }
 
     left = false;
     up = false;
     right = false;
     down = false;
 
-    // Block-wall collision detection
-    if (x < length) x = length;
-    if (y < length) y = length;
-    if (x + 2*length > WIDTH) x = WIDTH - 2*length;
-    if (y + 2*length > HEIGHT) y = HEIGHT - 2*length;
-
     // Sprite animation
     if (toggle) {
         stand = !stand;
         toggle = false;
+    }
+
+    // Bomb
+    if (bomb) {
+        board[y/length-1][x/length] = 0;
+        board[y/length][x/length-1] = 0;
+        board[y/length+1][x/length] = 0;
+        board[y/length][x/length+1] = 0;
+        bomb = false;
     }
 
     // Frame
@@ -138,44 +166,18 @@ function draw() {
     ctx.fillStyle = "rgba(0, 0, 0, 1)";
     rect(0, 0, WIDTH, HEIGHT);
 
-    // Draw walls
-    draw_walls();
-
-    // Drawing obstacles
+    // Drawing blocks
     ctx.fillStyle = "rgba(255, 255, 255, 1)";
-    rect(length, 5*length, length, length);
-    rect(4*length, 6*length, length, length);
-    rect(5*length, 10*length, length, length);
+    for (var i = 0; i < 15; i++)
+        for (var j = 0; j < 15; j++)
+            if (board[j][i])
+                rect(i*length, j*length, length, length);
 
     // Drawing bomberman
-    //ctx.fillStyle = "rgba(255, 0, 0, 1)";
-    //rect(x, y, length, length);
     if (stand)
         ctx.drawImage(bomberman, 8, 2, 15, 22, x+7, y, 15+sprite_width, 22+sprite_height);
     else
         ctx.drawImage(bomberman, 8+15, 2, 15, 22, x+7, y, 15+sprite_width, 22+sprite_height);
-}
-
-function draw_walls() {
-
-    // White
-    ctx.fillStyle = "rgba(0, 255, 255, 1)";
-
-    // Draw left wall
-    for (var i = 0; i < HEIGHT/length; i++)
-        rect(0, i*length, length, length);
-
-    // Draw right wall
-    for (var i = 0; i < HEIGHT/length; i++) 
-        rect(WIDTH-length, i*length, length, length);
-
-    // Draw upper wall
-    for (var i = 0; i < WIDTH/length; i++) 
-        rect(i*length, 0, length, length);
-
-    // Draw bottom wall
-    for (var i = 0; i < WIDTH/length; i++) 
-        rect(i*length, WIDTH-length, length, length);
 }
 
 function rect(x, y, w, h) {
