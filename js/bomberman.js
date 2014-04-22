@@ -5,7 +5,7 @@
 var context;
 var WIDTH;
 var HEIGHT;
-var intervalId;
+var interval_id;
 
 // Array of players (4 players)
 var player = new Array(4);
@@ -21,8 +21,8 @@ var grid_height = 10;
 var grid_width = 10;
 
 // Maximum and minimum canvas coordinates on the x-axis
-var canvasMinX = 0;
-var canvasMaxX = 0;
+var canvas_min_x;
+var canvas_max_x;
 
 // Initialize everything
 function init() {
@@ -34,11 +34,11 @@ function init() {
     HEIGHT = $("#canvas").height();
 
     // Game loop iteration every 17 milliseconds
-    intervalId = setInterval(main, 1000/60);
+    interval_id = setInterval(main, 1000/60);
 
     // Initialize mouse
-    canvasMinX = $("#canvas").offset().left;
-    canvasMaxX = canvasMinX + WIDTH;
+    canvas_min_x = $("#canvas").offset().left;
+    canvas_max_x = canvas_min_x + WIDTH;
 
     // Disable smoothness for pixelated effect
     context.webkitImageSmoothingEnabled = false;
@@ -59,43 +59,38 @@ $(document).mousemove(onMouseMove);
 
 function onKeyDown(evt) {
     switch(evt.keyCode) {
-        case 37:
+        case 37:    // left arrow
             player[0].left = true;
             break;
-        case 38:
+        case 38:    // up arrow
             player[0].up = true;
             break;
-        case 39:
+        case 39:    // right arrow
             player[0].right = true;
             break;
-        case 40:
+        case 40:    // down arrow
             player[0].down = true;
             break;
-        case 32:
+        case 32:    // space
             player[0].release_bomb = true;
             break;
-        case 65:
+        case 65:    // a
             player[1].left = true;
             break;
-        case 87:
+        case 87:    // w
             player[1].up = true;
             break;
-        case 68:
+        case 68:    // d
             player[1].right = true;
             break;
-        case 83:
+        case 83:    // s
             player[1].down = true;
             break;
-        case 16:
+        case 16:    // left shift
             player[1].release_bomb = true;
         default:
             break;
     }
-}
-
-function onMouseMove(evt) {
-    //if (evt.pageX > canvasMinX && evt.pageX < canvasMaxX)
-        //x = evt.pageX - canvasMinX - 40/2;
 }
 
 function main() {
