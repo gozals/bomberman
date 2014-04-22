@@ -146,7 +146,14 @@ function rect(x, y, w, h) {
     ctx.rect(x, y, w, h);
     ctx.closePath();
     ctx.fill();
+    ctx.rect(x, y, w, h);
+
+    // Draw borders
+    ctx.strokeStyle = "black";
+    ctx.lineWidth   = 3;
+    ctx.stroke();
 }
+
 
 function clear() {
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
