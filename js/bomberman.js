@@ -55,7 +55,6 @@ function init() {
 
 // JQuery
 $(document).keydown(onKeyDown);
-$(document).mousemove(onMouseMove);
 
 function onKeyDown(evt) {
     switch(evt.keyCode) {
