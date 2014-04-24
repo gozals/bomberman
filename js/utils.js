@@ -29,8 +29,12 @@ function fetch_sprite (sprite_name) {
         case "horizontal_walk_2":
             return [108, 2, 15, 22];
         case "horizontal_walk_3":
-            return [228, 28, 15, 22];
+            return [123, 2, 15, 22];
         case "horizontal_walk_4":
+            return [228, 28, 15, 22];
+        case "horizontal_walk_5":
             return [213, 28, 15, 22];
+        case "horizontal_walk_6":
+            return [198, 28, 15, 22];
     }
 }

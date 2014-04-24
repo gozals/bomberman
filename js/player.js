@@ -10,6 +10,11 @@ function Player(sprite_sheet, board, name, x, y) {
     this.down = false;
 
     this.direction = "down";
+    this.frame = new Array(4);
+    this.frame["left"] = 0;
+    this.frame["up"] = 0;
+    this.frame["right"] = 0;
+    this.frame["down"] = 0;
 
     this.stand = true;
     this.toggle = false;
@@ -19,8 +24,6 @@ function Player(sprite_sheet, board, name, x, y) {
     this.sprite_height = 18;
 
     this.alive = true;
-
-    this.vertical_walk = 0;
 }
 
 Player.LENGTH = 40;
@@ -28,38 +31,39 @@ Player.LENGTH = 40;
 Player.prototype.draw = function() {
     var sprite = [];
 
-    // To-do: find an alternative to this.stand (eg: use %)
     // To-do: create a complete sprite sheet using the current one
 
     switch (this.direction) {
-        case "left":    // Note: there's another sprite to add
-            if (this.stand)
+        case "left": 
+            if (this.frame["left"] == 0)
                 sprite = fetch_sprite("horizontal_walk_1");
-            else
+            else if (this.frame["left"] == 1)
                 sprite = fetch_sprite("horizontal_walk_2");
+            else if (this.frame["left"] == 2)
+                sprite = fetch_sprite("horizontal_walk_3");
             break;
 
         case "up":
-            if(this.stand)
+            if (this.frame["up"] == 0)
                 sprite = fetch_sprite("vertical_walk_3");
-            else
+            else if (this.frame["up"] == 1)
                 sprite = fetch_sprite("vertical_walk_4");
             break;
 
-        case "right":   // Note: there's another sprite to add
-            if (this.stand)
-                sprite = fetch_sprite("horizontal_walk_3");
-            else
+        case "right":
+            if (this.frame["right"] == 0)
                 sprite = fetch_sprite("horizontal_walk_4");
+            else if (this.frame["right"] == 1)
+                sprite = fetch_sprite("horizontal_walk_5");
+            else if (this.frame["right"] == 2)
+                sprite = fetch_sprite("horizontal_walk_6");
             break;
 
         case "down":
-            if (this.stand)
+            if (this.frame["down"] == 0)
                 sprite = fetch_sprite("vertical_walk_1");
-                //context.drawImage(sprite_sheet, 8, 2, 15, 22, this.x+7, this.y, 15+this.sprite_width, 22+this.sprite_height);
-            else
+            else if (this.frame["down"] == 1)
                 sprite = fetch_sprite("vertical_walk_2");
-                //context.drawImage(sprite_sheet, 8+15, 2, 15, 22, this.x+7, this.y, 15+this.sprite_width, 22+this.sprite_height);
             break;
     }
 
@@ -68,15 +72,18 @@ Player.prototype.draw = function() {
 }
 
 Player.prototype.move = function() {
+    
     if (this.left | this.up | this.right | this.down)
         this.toggle = true;
 
+    // Update position
     if (this.left) {
         this.x -= Player.LENGTH;
         if (board[this.y/Player.LENGTH][this.x/Player.LENGTH] >= 1)
             this.x += Player.LENGTH;
         this.left = false;
         this.direction = "left";
+        this.frame["left"] = (++this.frame["left"])%3;
     }
 
     else if (this.up) {
@@ -85,6 +92,7 @@ Player.prototype.move = function() {
             this.y += Player.LENGTH;
         this.up = false;
         this.direction = "up";
+        this.frame["up"] = (++this.frame["up"])%2;
     }
 
     else if (this.right) {
@@ -93,6 +101,7 @@ Player.prototype.move = function() {
             this.x -= Player.LENGTH;
         this.right = false;
         this.direction = "right";
+        this.frame["right"] = (++this.frame["right"])%3;
     }
 
     else if (this.down) {
@@ -101,5 +110,6 @@ Player.prototype.move = function() {
             this.y -= Player.LENGTH;
         this.down = false;
         this.direction = "down";
+        this.frame["down"] = (++this.frame["down"])%2;
     }
 }
