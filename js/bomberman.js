@@ -163,20 +163,6 @@ function draw() {
     player[3].draw();
 }
 
-function rect(x, y, w, h) {
-    context.beginPath();
-    context.rect(x, y, w, h);
-    context.closePath();
-    context.fill();
-    context.rect(x, y, w, h);
-
-    // Draw borders
-    context.strokeStyle = "black";
-    context.lineWidth   = 3;
-    context.stroke();
-}
-
-
 function clear() {
     context.clearRect(0, 0, WIDTH, HEIGHT);
 }
