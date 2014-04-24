@@ -1,6 +1,4 @@
 
-/* Bomberman clone */
-
 // Window information
 var context;
 var WIDTH;
@@ -54,10 +52,10 @@ function init() {
     sprite.src = 'resources/sprites/bomberman.gif';
 
     // Initialize players
-    player[0] = new Player(sprite, "Chafic", Player.LENGTH, Player.LENGTH);
-    player[1] = new Player(sprite, "Rachel", WIDTH-2*Player.LENGTH, Player.LENGTH);
-    player[2] = new Player(sprite, "Richard", Player.LENGTH, HEIGHT-2*Player.LENGTH);
-    player[3] = new Player(sprite, "Zouzou", WIDTH-2*Player.LENGTH, HEIGHT-2*Player.LENGTH);
+    player[0] = new Player(sprite, board, "Chafic", Player.LENGTH, Player.LENGTH);
+    player[1] = new Player(sprite, board, "Rachel", WIDTH-2*Player.LENGTH, Player.LENGTH);
+    player[2] = new Player(sprite, board, "Richard", Player.LENGTH, HEIGHT-2*Player.LENGTH);
+    player[3] = new Player(sprite, board, "Zouzou", WIDTH-2*Player.LENGTH, HEIGHT-2*Player.LENGTH);
 }
 
 // JQuery
@@ -107,35 +105,7 @@ function main() {
 function update() {
 
     for (var i = 0; i < 4; i++) {
-        // Update block position
-        if (player[i].left | player[i].up | player[i].right | player[i].down)
-            player[i].toggle = true;
-
-        if (player[i].left) {
-            player[i].x -= Player.LENGTH;
-            if (board[player[i].y/Player.LENGTH][player[i].x/Player.LENGTH] >= 1)
-                player[i].x += Player.LENGTH;
-        }
-        if (player[i].up) {
-            player[i].y -= Player.LENGTH;
-            if (board[player[i].y/Player.LENGTH][player[i].x/Player.LENGTH] >= 1)
-                player[i].y += Player.LENGTH;
-        }
-        if (player[i].right) {
-            player[i].x += Player.LENGTH;
-            if (board[player[i].y/Player.LENGTH][player[i].x/Player.LENGTH] >= 1)
-                player[i].x -= Player.LENGTH;
-        }
-        if (player[i].down) {
-            player[i].y += Player.LENGTH;
-            if (board[player[i].y/Player.LENGTH][player[i].x/Player.LENGTH] >= 1)
-                player[i].y -= Player.LENGTH;
-        }
-
-        player[i].left = false;
-        player[i].up = false;
-        player[i].right = false;
-        player[i].down = false;
+        player[i].move();
 
         // Sprite animation
         if (player[i].toggle) {
