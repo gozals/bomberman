@@ -1,5 +1,5 @@
 
-function Player(name, x, y) {
+function Player(sprite, name, x, y) {
     this.name = name;
     this.x = x;
     this.y = y;
@@ -16,8 +16,17 @@ function Player(name, x, y) {
 Player.LENGTH = 40;
 
 // Load bombeman sprite
-Player.sprite = new Image(); 
-Player.sprite.src = 'resources/sprites/bomberman.gif';
+
+Player.sprite_src_x;
+Player.sprite_src_y;
+Player.sprite_src_width;
+Player.sprite_src_height;
+
+Player.sprite_dest_x;
+Player.sprite_dest_y;
+Player.sprite_dest_width;
+Player.sprite_dest_height;
+
 Player.sprite_width = 12;
 Player.sprite_height = 18;
 

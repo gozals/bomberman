@@ -24,6 +24,9 @@ var grid_width = 10;
 var canvas_min_x;
 var canvas_max_x;
 
+// Sprite
+var sprite;
+
 // Initialize everything
 function init() {
     // Get a reference to the canvas
@@ -46,11 +49,15 @@ function init() {
     // Load level map
     board = level1;
 
+    // Load sprite
+    sprite = new Image();
+    sprite.src = 'resources/sprites/bomberman.gif';
+
     // Initialize players
-    player[0] = new Player("Chafic", Player.LENGTH, Player.LENGTH);
-    player[1] = new Player("Rachel", WIDTH-2*Player.LENGTH, Player.LENGTH);
-    player[2] = new Player("Richard", Player.LENGTH, HEIGHT-2*Player.LENGTH);
-    player[3] = new Player("Zouzou", WIDTH-2*Player.LENGTH, HEIGHT-2*Player.LENGTH);
+    player[0] = new Player(sprite, "Chafic", Player.LENGTH, Player.LENGTH);
+    player[1] = new Player(sprite, "Rachel", WIDTH-2*Player.LENGTH, Player.LENGTH);
+    player[2] = new Player(sprite, "Richard", Player.LENGTH, HEIGHT-2*Player.LENGTH);
+    player[3] = new Player(sprite, "Zouzou", WIDTH-2*Player.LENGTH, HEIGHT-2*Player.LENGTH);
 }
 
 // JQuery
@@ -181,27 +188,27 @@ function draw() {
 
     // Draw player 1
     if (player[0].stand)
-        context.drawImage(Player.sprite, 8, 2, 15, 22, player[0].x+7, player[0].y, 15+Player.sprite_width, 22+Player.sprite_height);
+        context.drawImage(sprite, 8, 2, 15, 22, player[0].x+7, player[0].y, 15+Player.sprite_width, 22+Player.sprite_height);
     else
-        context.drawImage(Player.sprite, 8+15, 2, 15, 22, player[0].x+7, player[0].y, 15+Player.sprite_width, 22+Player.sprite_height);
+        context.drawImage(sprite, 8+15, 2, 15, 22, player[0].x+7, player[0].y, 15+Player.sprite_width, 22+Player.sprite_height);
 
     // Draw player 2
     if (player[1].stand)
-        context.drawImage(Player.sprite, 8, 2, 15, 22, player[1].x+7, player[1].y, 15+Player.sprite_width, 22+Player.sprite_height);
+        context.drawImage(sprite, 8, 2, 15, 22, player[1].x+7, player[1].y, 15+Player.sprite_width, 22+Player.sprite_height);
     else
-        context.drawImage(Player.sprite, 8+15, 2, 15, 22, player[1].x+7, player[1].y, 15+Player.sprite_width, 22+Player.sprite_height);
+        context.drawImage(sprite, 8+15, 2, 15, 22, player[1].x+7, player[1].y, 15+Player.sprite_width, 22+Player.sprite_height);
 
     // Draw player 3
     if (player[2].stand)
-        context.drawImage(Player.sprite, 8, 2, 15, 22, player[2].x+7, player[2].y, 15+Player.sprite_width, 22+Player.sprite_height);
+        context.drawImage(sprite, 8, 2, 15, 22, player[2].x+7, player[2].y, 15+Player.sprite_width, 22+Player.sprite_height);
     else
-        context.drawImage(Player.sprite, 8+15, 2, 15, 22, player[2].x+7, player[2].y, 15+Player.sprite_width, 22+Player.sprite_height);
+        context.drawImage(sprite, 8+15, 2, 15, 22, player[2].x+7, player[2].y, 15+Player.sprite_width, 22+Player.sprite_height);
 
     // Draw player 4
     if (player[3].stand)
-        context.drawImage(Player.sprite, 8, 2, 15, 22, player[3].x+7, player[3].y, 15+Player.sprite_width, 22+Player.sprite_height);
+        context.drawImage(sprite, 8, 2, 15, 22, player[3].x+7, player[3].y, 15+Player.sprite_width, 22+Player.sprite_height);
     else
-        context.drawImage(Player.sprite, 8+15, 2, 15, 22, player[3].x+7, player[3].y, 15+Player.sprite_width, 22+Player.sprite_height);
+        context.drawImage(sprite, 8+15, 2, 15, 22, player[3].x+7, player[3].y, 15+Player.sprite_width, 22+Player.sprite_height);
 }
 
 function rect(x, y, w, h) {
