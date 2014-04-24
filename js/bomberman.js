@@ -23,7 +23,7 @@ var canvas_min_x;
 var canvas_max_x;
 
 // Sprite
-var sprite;
+var sprite_sheet;
 
 // Initialize everything
 function init() {
@@ -48,14 +48,14 @@ function init() {
     board = level1;
 
     // Load sprite
-    sprite = new Image();
-    sprite.src = 'resources/sprites/bomberman.gif';
+    sprite_sheet = new Image();
+    sprite_sheet.src = 'resources/sprites/bomberman.gif';
 
     // Initialize players
-    player[0] = new Player(sprite, board, "Chafic", Player.LENGTH, Player.LENGTH);
-    player[1] = new Player(sprite, board, "Rachel", WIDTH-2*Player.LENGTH, Player.LENGTH);
-    player[2] = new Player(sprite, board, "Richard", Player.LENGTH, HEIGHT-2*Player.LENGTH);
-    player[3] = new Player(sprite, board, "Zouzou", WIDTH-2*Player.LENGTH, HEIGHT-2*Player.LENGTH);
+    player[0] = new Player(sprite_sheet, board, "Chafic", Player.LENGTH, Player.LENGTH);
+    player[1] = new Player(sprite_sheet, board, "Rachel", WIDTH-2*Player.LENGTH, Player.LENGTH);
+    player[2] = new Player(sprite_sheet, board, "Richard", Player.LENGTH, HEIGHT-2*Player.LENGTH);
+    player[3] = new Player(sprite_sheet, board, "Zouzou", WIDTH-2*Player.LENGTH, HEIGHT-2*Player.LENGTH);
 }
 
 // JQuery
@@ -107,7 +107,7 @@ function update() {
     for (var i = 0; i < 4; i++) {
         player[i].move();
 
-        // Sprite animation
+        // Animation
         if (player[i].toggle) {
             player[i].stand = !player[i].stand;
             player[i].toggle = false;
