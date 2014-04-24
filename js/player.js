@@ -11,22 +11,21 @@ function Player(sprite, name, x, y) {
     this.stand = true;
     this.toggle = false;
     this.release_bomb = false;
+
+    this.sprite_width = 12;
+    this.sprite_height = 18;
+
 }
 
 Player.LENGTH = 40;
 
-// Load bombeman sprite
-
-Player.sprite_src_x;
-Player.sprite_src_y;
-Player.sprite_src_width;
-Player.sprite_src_height;
-
-Player.sprite_dest_x;
-Player.sprite_dest_y;
-Player.sprite_dest_width;
-Player.sprite_dest_height;
-
-Player.sprite_width = 12;
-Player.sprite_height = 18;
-
+// All instances of Person create reference methods to it's prototype.
+// These references are not deletable (but they can be overwritten).
+Player.prototype = {
+    draw: function() {
+        if (this.stand)
+            context.drawImage(sprite, 8, 2, 15, 22, this.x+7, this.y, 15+this.sprite_width, 22+this.sprite_height);
+        else
+            context.drawImage(sprite, 8+15, 2, 15, 22, this.x+7, this.y, 15+this.sprite_width, 22+this.sprite_height);
+    }
+};

@@ -170,11 +170,11 @@ function draw() {
     // Clear screen (erase everything)
     clear();
 
-    // Draw background
+    // Fill background
     context.fillStyle = "rgba(0, 0, 0, 1)";
     rect(0, 0, WIDTH, HEIGHT);
 
-    // Drawing blocks
+    // Draw blocks
     for (var i = 0; i < 15; i++)
         for (var j = 0; j < 15; j++)
             if (board[j][i] == 1) {
@@ -186,29 +186,11 @@ function draw() {
                 rect(i*Player.LENGTH, j*Player.LENGTH, Player.LENGTH, Player.LENGTH);
             }
 
-    // Draw player 1
-    if (player[0].stand)
-        context.drawImage(sprite, 8, 2, 15, 22, player[0].x+7, player[0].y, 15+Player.sprite_width, 22+Player.sprite_height);
-    else
-        context.drawImage(sprite, 8+15, 2, 15, 22, player[0].x+7, player[0].y, 15+Player.sprite_width, 22+Player.sprite_height);
-
-    // Draw player 2
-    if (player[1].stand)
-        context.drawImage(sprite, 8, 2, 15, 22, player[1].x+7, player[1].y, 15+Player.sprite_width, 22+Player.sprite_height);
-    else
-        context.drawImage(sprite, 8+15, 2, 15, 22, player[1].x+7, player[1].y, 15+Player.sprite_width, 22+Player.sprite_height);
-
-    // Draw player 3
-    if (player[2].stand)
-        context.drawImage(sprite, 8, 2, 15, 22, player[2].x+7, player[2].y, 15+Player.sprite_width, 22+Player.sprite_height);
-    else
-        context.drawImage(sprite, 8+15, 2, 15, 22, player[2].x+7, player[2].y, 15+Player.sprite_width, 22+Player.sprite_height);
-
-    // Draw player 4
-    if (player[3].stand)
-        context.drawImage(sprite, 8, 2, 15, 22, player[3].x+7, player[3].y, 15+Player.sprite_width, 22+Player.sprite_height);
-    else
-        context.drawImage(sprite, 8+15, 2, 15, 22, player[3].x+7, player[3].y, 15+Player.sprite_width, 22+Player.sprite_height);
+    // Draw players
+    player[0].draw();
+    player[1].draw();
+    player[2].draw();
+    player[3].draw();
 }
 
 function rect(x, y, w, h) {
