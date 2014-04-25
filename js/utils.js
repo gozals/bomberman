@@ -17,24 +17,24 @@ function fetch_sprite (sprite_name) {
     var test;
     switch(sprite_name) {
         case "vertical_walk_1":
-            return [8, 2, 15, 22];
+            return [0, 0, 15, 22];
         case "vertical_walk_2":
-            return [23, 2, 15, 22];
+            return [15, 0, 15, 22];
         case "vertical_walk_3":
-            return [195, 2, 15, 22];
+            return [30, 0, 15, 22];
         case "vertical_walk_4":
-            return [212, 2, 15, 22];
+            return [45, 0, 15, 22];
         case "horizontal_walk_1":
-            return [93, 2, 15, 22];
+            return [60, 0, 15, 22];
         case "horizontal_walk_2":
-            return [108, 2, 15, 22];
+            return [74, 0, 15, 22];
         case "horizontal_walk_3":
-            return [123, 2, 15, 22];
+            return [88, 0, 15, 22];
         case "horizontal_walk_4":
-            return [228, 28, 15, 22];
+            return [102, 0, 15, 22];
         case "horizontal_walk_5":
-            return [213, 28, 15, 22];
+            return [116, 0, 15, 22];
         case "horizontal_walk_6":
-            return [198, 28, 15, 22];
+            return [130, 0, 15, 22];
     }
 }

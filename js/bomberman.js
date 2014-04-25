@@ -23,7 +23,10 @@ var canvas_min_x;
 var canvas_max_x;
 
 // Sprite
-var sprite_sheet;
+var white_bomberman;
+var black_bomberman;
+var red_bomberman;
+var blue_bomberman;
 
 // Initialize everything
 function init() {
@@ -48,14 +51,21 @@ function init() {
     board = level1;
 
     // Load sprite
-    sprite_sheet = new Image();
-    sprite_sheet.src = 'resources/sprites/bomberman.gif';
+    white_bomberman = new Image();
+    black_bomberman = new Image();
+    red_bomberman = new Image();
+    blue_bomberman = new Image();
+
+    white_bomberman.src = 'resources/sprites/white_bomberman.gif';
+    black_bomberman.src = 'resources/sprites/black_bomberman.gif';
+    red_bomberman.src = 'resources/sprites/red_bomberman.gif';
+    blue_bomberman.src = 'resources/sprites/blue_bomberman.gif';
 
     // Initialize players
-    player[0] = new Player(sprite_sheet, board, "Chafic", Player.LENGTH, Player.LENGTH);
-    player[1] = new Player(sprite_sheet, board, "Rachel", WIDTH-2*Player.LENGTH, Player.LENGTH);
-    player[2] = new Player(sprite_sheet, board, "Richard", Player.LENGTH, HEIGHT-2*Player.LENGTH);
-    player[3] = new Player(sprite_sheet, board, "Zouzou", WIDTH-2*Player.LENGTH, HEIGHT-2*Player.LENGTH);
+    player[0] = new Player(white_bomberman, board, "Chafic", 0, Player.LENGTH, Player.LENGTH);
+    player[1] = new Player(black_bomberman, board, "Rachel", 1, WIDTH-2*Player.LENGTH, Player.LENGTH);
+    player[2] = new Player(red_bomberman, board, "Richard", 2, Player.LENGTH, HEIGHT-2*Player.LENGTH);
+    player[3] = new Player(blue_bomberman, board, "Zouzou", 3, WIDTH-2*Player.LENGTH, HEIGHT-2*Player.LENGTH);
 }
 
 // JQuery

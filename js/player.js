@@ -1,6 +1,8 @@
 
-function Player(sprite_sheet, board, name, x, y) {
+function Player(sprite_sheet, board, name, number, x, y) {
+    this.sprite_sheet = sprite_sheet;
     this.name = name;
+    this.number = number;
     this.x = x;
     this.y = y;
 
@@ -68,7 +70,7 @@ Player.prototype.draw = function() {
     }
 
     // (sprite_sheet, src_x, src_y, src_width, src_height, dest_x, dest_y, dest_width, dest_height);
-    context.drawImage(sprite_sheet, sprite[0], sprite[1], sprite[2], sprite[3], this.x+7, this.y, sprite[2]*(Player.LENGTH/sprite[3]), Player.LENGTH);//sprite[3]+this.sprite_height);
+    context.drawImage(this.sprite_sheet, sprite[0], sprite[1], sprite[2], sprite[3], this.x+7, this.y, sprite[2]*(Player.LENGTH/sprite[3]), Player.LENGTH);//sprite[3]+this.sprite_height);
 }
 
 Player.prototype.move = function() {
