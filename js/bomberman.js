@@ -37,9 +37,6 @@ function init() {
     WIDTH = $("#canvas").width();
     HEIGHT = $("#canvas").height();
 
-    // Game loop iteration every 17 milliseconds
-    interval_id = setInterval(main, 1000/60);
-
     // Initialize mouse
     canvas_min_x = $("#canvas").offset().left;
     canvas_max_x = canvas_min_x + WIDTH;
@@ -108,6 +105,7 @@ function onKeyDown(evt) {
 }
 
 function main() {
+    requestAnimationFrame(main);
     update();
     draw();
 }
@@ -178,3 +176,4 @@ function clear() {
 }
 
 init();
+main();
