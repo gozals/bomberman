@@ -1,6 +1,3 @@
-(function($) {
-    // JQuery plugin code here
-})(jQuery);
 
 // HTML5 data 
 var context;
