@@ -18,8 +18,6 @@ function Player(sprite_sheet, board, name, number, x, y) {
     this.frame["right"] = 0;
     this.frame["down"] = 0;
 
-    this.stand = true;
-    this.toggle = false;
     this.release_bomb = false;
 
     this.sprite_width = 12;
@@ -28,12 +26,8 @@ function Player(sprite_sheet, board, name, number, x, y) {
     this.alive = true;
 }
 
-Player.LENGTH = 40;
-
 Player.prototype.draw = function() {
     var sprite = [];
-
-    // To-do: create a complete sprite sheet using the current one
 
     switch (this.direction) {
         case "left": 
@@ -69,47 +63,43 @@ Player.prototype.draw = function() {
             break;
     }
 
-    // (sprite_sheet, src_x, src_y, src_width, src_height, dest_x, dest_y, dest_width, dest_height);
-    context.drawImage(this.sprite_sheet, sprite[0], sprite[1], sprite[2], sprite[3], this.x+7, this.y, sprite[2]*(Player.LENGTH/sprite[3]), Player.LENGTH);//sprite[3]+this.sprite_height);
+    context.drawImage(this.sprite_sheet, sprite[0], sprite[1], sprite[2], sprite[3], this.x+7, this.y, sprite[2]*(block_size/sprite[3]), block_size);//sprite[3]+this.sprite_height);
 }
 
 Player.prototype.move = function() {
     
-    if (this.left | this.up | this.right | this.down)
-        this.toggle = true;
-
     // Update position
     if (this.left) {
-        this.x -= Player.LENGTH;
-        if (board[this.y/Player.LENGTH][this.x/Player.LENGTH] >= 1)
-            this.x += Player.LENGTH;
+        this.x -= block_size;
+        if (board[this.y/block_size][this.x/block_size] >= 1)
+            this.x += block_size;
         this.left = false;
         this.direction = "left";
         this.frame["left"] = (++this.frame["left"])%3;
     }
 
     else if (this.up) {
-        this.y -= Player.LENGTH;
-        if (board[this.y/Player.LENGTH][this.x/Player.LENGTH] >= 1)
-            this.y += Player.LENGTH;
+        this.y -= block_size;
+        if (board[this.y/block_size][this.x/block_size] >= 1)
+            this.y += block_size;
         this.up = false;
         this.direction = "up";
         this.frame["up"] = (++this.frame["up"])%2;
     }
 
     else if (this.right) {
-        this.x += Player.LENGTH;
-        if (board[this.y/Player.LENGTH][this.x/Player.LENGTH] >= 1)
-            this.x -= Player.LENGTH;
+        this.x += block_size;
+        if (board[this.y/block_size][this.x/block_size] >= 1)
+            this.x -= block_size;
         this.right = false;
         this.direction = "right";
         this.frame["right"] = (++this.frame["right"])%3;
     }
 
     else if (this.down) {
-        this.y += Player.LENGTH;
-        if (board[this.y/Player.LENGTH][this.x/Player.LENGTH] >= 1)
-            this.y -= Player.LENGTH;
+        this.y += block_size;
+        if (board[this.y/block_size][this.x/block_size] >= 1)
+            this.y -= block_size;
         this.down = false;
         this.direction = "down";
         this.frame["down"] = (++this.frame["down"])%2;

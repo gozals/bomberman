@@ -1,20 +1,18 @@
 
 // Draws a rectangle with (x, y) being the top left corner coordinates and 'w' and 'h' being the width and height respectively
-function rect(x, y, w, h) {
+function draw_block(x, y, w, h, test) {
+    // Fill block 
     context.beginPath();
     context.rect(x, y, w, h);
     context.closePath();
+    context.fillStyle = test;
     context.fill();
-    context.rect(x, y, w, h);
 
     // Draw borders
-    context.strokeStyle = "black";
-    context.lineWidth   = 3;
     context.stroke();
 }
 
 function fetch_sprite (sprite_name) {
-    var test;
     switch(sprite_name) {
         case "vertical_walk_1":
             return [0, 0, 15, 22];

@@ -1,45 +1,40 @@
+(function($) {
+    // JQuery plugin code here
+})(jQuery);
 
-// Window information
+// HTML5 data 
 var context;
 var WIDTH;
 var HEIGHT;
-var interval_id;
-
-// Array of players (4 players)
-var player = new Array(4);
 
 // Board
 var board;
+var block_size = 40;
 
-// Frame
-var frame = 0;
+// Array of players
+var player = new Array(4);
 
-// Grid
-var grid_height = 10;
-var grid_width = 10;
-
-// Maximum and minimum canvas coordinates on the x-axis
-var canvas_min_x;
-var canvas_max_x;
-
-// Sprite
+// Sprites
 var white_bomberman;
 var black_bomberman;
 var red_bomberman;
 var blue_bomberman;
+
+init();
+main();
 
 // Initialize everything
 function init() {
     // Get a reference to the canvas
     context = $("#canvas")[0].getContext("2d");
 
+    // Block borders style
+    context.strokeStyle = "black";
+    //context.lineWidth = 3;
+
     // Get canvas dimensions
     WIDTH = $("#canvas").width();
     HEIGHT = $("#canvas").height();
-
-    // Initialize mouse
-    canvas_min_x = $("#canvas").offset().left;
-    canvas_max_x = canvas_min_x + WIDTH;
 
     // Disable smoothness for pixelated effect
     context.webkitImageSmoothingEnabled = false;
@@ -47,7 +42,7 @@ function init() {
     // Load level map
     board = level1;
 
-    // Load sprite
+    // Load sprites
     white_bomberman = new Image();
     black_bomberman = new Image();
     red_bomberman = new Image();
@@ -59,15 +54,21 @@ function init() {
     blue_bomberman.src = 'resources/sprites/blue_bomberman.gif';
 
     // Initialize players
-    player[0] = new Player(white_bomberman, board, "Chafic", 0, Player.LENGTH, Player.LENGTH);
-    player[1] = new Player(black_bomberman, board, "Rachel", 1, WIDTH-2*Player.LENGTH, Player.LENGTH);
-    player[2] = new Player(red_bomberman, board, "Richard", 2, Player.LENGTH, HEIGHT-2*Player.LENGTH);
-    player[3] = new Player(blue_bomberman, board, "Zouzou", 3, WIDTH-2*Player.LENGTH, HEIGHT-2*Player.LENGTH);
+    player[0] = new Player(white_bomberman, board, "Chafic", 0, block_size, block_size);
+    player[1] = new Player(black_bomberman, board, "Rachel", 1, WIDTH-2*block_size, block_size);
+    player[2] = new Player(red_bomberman, board, "Richard", 2, block_size, HEIGHT-2*block_size);
+    player[3] = new Player(blue_bomberman, board, "Zouzou", 3, WIDTH-2*block_size, HEIGHT-2*block_size);
 }
 
-// JQuery
-$(document).keydown(onKeyDown);
+// Game loop
+function main() {
+    requestAnimationFrame(main);
+    $(document).keydown(onKeyDown);
+    update();
+    draw();
+}
 
+// Handle input (JQuery)
 function onKeyDown(evt) {
     switch(evt.keyCode) {
         case 37:    // left arrow
@@ -104,65 +105,46 @@ function onKeyDown(evt) {
     }
 }
 
-function main() {
-    requestAnimationFrame(main);
-    update();
-    draw();
-}
-
+// Update game state
 function update() {
-
     for (var i = 0; i < 4; i++) {
+        // Update player position and animation 
         player[i].move();
 
-        // Animation
-        if (player[i].toggle) {
-            player[i].stand = !player[i].stand;
-            player[i].toggle = false;
-        }
-
-        // Bomb
+        // Update bombs state 
         if (player[i].release_bomb) {
 
-            if (board[player[i].y/Player.LENGTH-1][player[i].x/Player.LENGTH] != 2)
-                board[player[i].y/Player.LENGTH-1][player[i].x/Player.LENGTH] = 0;
+            if (board[player[i].y/block_size-1][player[i].x/block_size] != 2)
+                board[player[i].y/block_size-1][player[i].x/block_size] = 0;
 
-            if (board[player[i].y/Player.LENGTH][player[i].x/Player.LENGTH-1] != 2)
-                board[player[i].y/Player.LENGTH][player[i].x/Player.LENGTH-1] = 0;
+            if (board[player[i].y/block_size][player[i].x/block_size-1] != 2)
+                board[player[i].y/block_size][player[i].x/block_size-1] = 0;
 
-            if (board[player[i].y/Player.LENGTH+1][player[i].x/Player.LENGTH] != 2)
-                board[player[i].y/Player.LENGTH+1][player[i].x/Player.LENGTH] = 0;
+            if (board[player[i].y/block_size+1][player[i].x/block_size] != 2)
+                board[player[i].y/block_size+1][player[i].x/block_size] = 0;
 
-            if (board[player[i].y/Player.LENGTH][player[i].x/Player.LENGTH+1] != 2)
-                board[player[i].y/Player.LENGTH][player[i].x/Player.LENGTH+1] = 0;
+            if (board[player[i].y/block_size][player[i].x/block_size+1] != 2)
+                board[player[i].y/block_size][player[i].x/block_size+1] = 0;
 
             player[i].release_bomb = false;
         }
-
-        // Frame
-        frame++;
     }
 }
 
 function draw() {
     // Clear screen (erase everything)
-    clear();
+    context.clearRect(0, 0, WIDTH, HEIGHT);
 
     // Fill background
-    context.fillStyle = "rgba(0, 0, 0, 1)";
-    rect(0, 0, WIDTH, HEIGHT);
+    draw_block(0, 0, WIDTH, HEIGHT, "rgba(0, 0, 0, 1)");
 
     // Draw blocks
     for (var i = 0; i < 15; i++)
         for (var j = 0; j < 15; j++)
-            if (board[j][i] == 1) {
-                context.fillStyle = "rgba(255, 255, 255, 1)";
-                rect(i*Player.LENGTH, j*Player.LENGTH, Player.LENGTH, Player.LENGTH);
-            } 
-            else if (board[j][i] == 2) {
-                context.fillStyle = "rgba(0, 255, 255, 1)";
-                rect(i*Player.LENGTH, j*Player.LENGTH, Player.LENGTH, Player.LENGTH);
-            }
+            if (board[j][i] == 1)
+                draw_block(i*block_size, j*block_size, block_size, block_size, "rgba(255, 255, 255, 1)");
+            else if (board[j][i] == 2)
+                draw_block(i*block_size, j*block_size, block_size, block_size, "rgba(0, 255, 255, 1)");
 
     // Draw players
     player[0].draw();
@@ -170,10 +152,3 @@ function draw() {
     player[2].draw();
     player[3].draw();
 }
-
-function clear() {
-    context.clearRect(0, 0, WIDTH, HEIGHT);
-}
-
-init();
-main();
