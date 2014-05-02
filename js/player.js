@@ -23,7 +23,7 @@ function Player(sprite_sheet, board, name, number, x, y) {
 
     // Bomb information
     this.release_bomb = false;
-    this.bomb_radius = 1;
+    this.bomb_radius = 4;
 
     this.alive = true;
 
@@ -109,4 +109,8 @@ Player.prototype.move = function() {
         this.direction = "down";
         this.frame["down"] = (++this.frame["down"])%2;
     }
+}
+
+Player.prototype.kill = function() {
+    this.alive = false;
 }

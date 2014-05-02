@@ -9,7 +9,7 @@ var board;
 var block_size = 40;
 
 // Array of players
-var player = new Array(4);
+var player = [];
 
 // Sprites
 var white_bomberman;
@@ -107,19 +107,25 @@ function onKeyDown(evt) {
 
 // Update game state
 function update() {
-    for (var i = 0; i < 4; i++) {
-        // Update player position and animation 
-        player[i].move();
+    for (var i = 0; i < player.length; i++) {
+        if (player[i].alive) {
+            // Update player position and animation 
+            player[i].move();
 
-        // Update bombs state 
-        if (player[i].release_bomb) {
-            player[i].bombs.push(new Bomb(bomb_sprite, player[i].x, player[i].y, player[i].bomb_radius));
-            player[i].release_bomb = false;
+            // Update bombs state 
+            if (player[i].release_bomb) {
+                player[i].bombs.push(new Bomb(bomb_sprite, player[i].x, player[i].y, player[i].bomb_radius));
+                player[i].release_bomb = false;
+            }
+
+            // Remove exploded bombs 
+            if (typeof(player[i].bombs[0]) != "undefined" && player[i].bombs[0].exploded)
+                player[i].bombs.shift();
+
+            //console.log(player[i].alive);
+            if (player[i].alive == false)
+                console.log("Player " + i + " is dead!");
         }
-
-        // Remove exploded bombs 
-        if (typeof(player[i].bombs[0]) != "undefined" && player[i].bombs[0].exploded)
-            player[i].bombs.shift();
     }
 }
 
@@ -144,8 +150,7 @@ function draw() {
             player[i].bombs[j].draw();
 
     // Draw players
-    player[0].draw();
-    player[1].draw();
-    player[2].draw();
-    player[3].draw();
+    for (var i = 0; i < player.length; i++)
+        if (player[i].alive)
+            player[i].draw();
 }
