@@ -51,7 +51,7 @@ function init() {
     black_bomberman.src = 'resources/sprites/black_bomberman.gif';
     red_bomberman.src = 'resources/sprites/red_bomberman.gif';
     blue_bomberman.src = 'resources/sprites/blue_bomberman.gif';
-    bomb_sprite.src = 'resources/sprites/bomb.gif'
+    bomb_sprite.src = 'resources/sprites/bombs.gif'
 
     // Initialize players
     player[0] = new Player(white_bomberman, board, "Chafic", 0, block_size, block_size);
