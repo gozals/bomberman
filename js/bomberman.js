@@ -16,6 +16,7 @@ var white_bomberman;
 var black_bomberman;
 var red_bomberman;
 var blue_bomberman;
+var bomb_sprite;
 
 init();
 main();
@@ -44,11 +45,13 @@ function init() {
     black_bomberman = new Image();
     red_bomberman = new Image();
     blue_bomberman = new Image();
+    bomb_sprite = new Image();
 
     white_bomberman.src = 'resources/sprites/white_bomberman.gif';
     black_bomberman.src = 'resources/sprites/black_bomberman.gif';
     red_bomberman.src = 'resources/sprites/red_bomberman.gif';
     blue_bomberman.src = 'resources/sprites/blue_bomberman.gif';
+    bomb_sprite.src = 'resources/sprites/bomb.gif'
 
     // Initialize players
     player[0] = new Player(white_bomberman, board, "Chafic", 0, block_size, block_size);
@@ -110,21 +113,13 @@ function update() {
 
         // Update bombs state 
         if (player[i].release_bomb) {
-
-            if (board[player[i].y/block_size-1][player[i].x/block_size] != 2)
-                board[player[i].y/block_size-1][player[i].x/block_size] = 0;
-
-            if (board[player[i].y/block_size][player[i].x/block_size-1] != 2)
-                board[player[i].y/block_size][player[i].x/block_size-1] = 0;
-
-            if (board[player[i].y/block_size+1][player[i].x/block_size] != 2)
-                board[player[i].y/block_size+1][player[i].x/block_size] = 0;
-
-            if (board[player[i].y/block_size][player[i].x/block_size+1] != 2)
-                board[player[i].y/block_size][player[i].x/block_size+1] = 0;
-
+            player[i].bombs.push(new Bomb(bomb_sprite, player[i].x, player[i].y, 1));
             player[i].release_bomb = false;
         }
+
+        // Remove exploded bombs 
+        if (typeof(player[i].bombs[0]) != "undefined" && player[i].bombs[0].exploded)
+            player[i].bombs.shift();
     }
 }
 
@@ -142,6 +137,11 @@ function draw() {
                 draw_block(i*block_size, j*block_size, block_size, block_size, "rgba(255, 255, 255, 1)");
             else if (board[j][i] == 2)
                 draw_block(i*block_size, j*block_size, block_size, block_size, "rgba(0, 255, 255, 1)");
+
+    // Draw bombs
+    for (var i = 0; i < player.length; i++)
+        for (var j = 0; j < player[i].bombs.length; j++)
+            player[i].bombs[j].draw();
 
     // Draw players
     player[0].draw();

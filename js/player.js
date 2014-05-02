@@ -24,6 +24,9 @@ function Player(sprite_sheet, board, name, number, x, y) {
     this.sprite_height = 18;
 
     this.alive = true;
+
+    // Released bombs
+    this.bombs = [];
 }
 
 Player.prototype.draw = function() {
@@ -63,7 +66,7 @@ Player.prototype.draw = function() {
             break;
     }
 
-    context.drawImage(this.sprite_sheet, sprite[0], sprite[1], sprite[2], sprite[3], this.x+7, this.y, sprite[2]*(block_size/sprite[3]), block_size);//sprite[3]+this.sprite_height);
+    context.drawImage(this.sprite_sheet, sprite[0], sprite[1], sprite[2], sprite[3], this.x+7, this.y, sprite[2]*(block_size/sprite[3]), block_size);
 }
 
 Player.prototype.move = function() {

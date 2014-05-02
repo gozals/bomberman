@@ -1,11 +1,11 @@
 
 // Draws a rectangle with (x, y) being the top left corner coordinates and 'w' and 'h' being the width and height respectively
-function draw_block(x, y, w, h, test) {
+function draw_block(x, y, w, h, color) {
     // Fill block 
     context.beginPath();
     context.rect(x, y, w, h);
     context.closePath();
-    context.fillStyle = test;
+    context.fillStyle = color;
     context.fill();
 
     // Draw borders
@@ -34,5 +34,7 @@ function fetch_sprite (sprite_name) {
             return [116, 0, 15, 22];
         case "horizontal_walk_6":
             return [130, 0, 15, 22];
+        case "bomb_large":
+            return [229, 60, 16, 16];
     }
 }
