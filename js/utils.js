@@ -35,9 +35,9 @@ function fetch_sprite (sprite_name) {
         case "horizontal_walk_6":
             return [130, 0, 15, 22];
         case "bomb_small":
-            return [0, 0, 16, 17];
+            return [0, 1, 14, 16];
         case "bomb_medium":
-            return [18, 0, 16, 17];
+            return [18, 0, 16, 16];
         case "bomb_large":
             return [37, 0, 16, 17];
     }

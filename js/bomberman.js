@@ -113,7 +113,7 @@ function update() {
 
         // Update bombs state 
         if (player[i].release_bomb) {
-            player[i].bombs.push(new Bomb(bomb_sprite, player[i].x, player[i].y, 1));
+            player[i].bombs.push(new Bomb(bomb_sprite, player[i].x, player[i].y, player[i].bomb_radius));
             player[i].release_bomb = false;
         }
 

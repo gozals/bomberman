@@ -18,10 +18,12 @@ function Player(sprite_sheet, board, name, number, x, y) {
     this.frame["right"] = 0;
     this.frame["down"] = 0;
 
-    this.release_bomb = false;
-
     this.sprite_width = 12;
     this.sprite_height = 18;
+
+    // Bomb information
+    this.release_bomb = false;
+    this.bomb_radius = 1;
 
     this.alive = true;
 
