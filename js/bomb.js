@@ -34,30 +34,37 @@ Bomb.prototype.explode = function() {
 
     // Destroy above block
     for (var i = 1; i <= this.radius; i++)
-        if (board[(bomb_y-1*i)][bomb_x] != 2) {
+        if (board[(bomb_y-1*i)][bomb_x] == 1) {
             board[(bomb_y-1*i)][bomb_x] = 0;
+            break;
         }
         else
             break;
 
     // Destroy left blocks
     for (var i = 1; i <= this.radius; i++) 
-        if (board[bomb_y][(bomb_x-1*i)] != 2)
+        if (board[bomb_y][(bomb_x-1*i)] == 1) {
             board[bomb_y][(bomb_x-1*i)] = 0;
+            break;
+        }
         else
             break;
 
     // Destroy below blocks
     for (var i = 1; i <= this.radius; i++)
-        if (board[(bomb_y+1*i)][bomb_x] != 2)
+        if (board[(bomb_y+1*i)][bomb_x] == 1) {
             board[(bomb_y+1*i)][bomb_x] = 0;
+            break;
+        }
         else
             break;
 
     // Destroy right blocks
     for (var i = 1; i <= this.radius; i++)
-        if (board[bomb_y][(bomb_x+1*i)] != 2)
+        if (board[bomb_y][(bomb_x+1*i)] == 1) {
             board[bomb_y][(bomb_x+1*i)] = 0;
+            break;
+        }
         else
             break;
 
