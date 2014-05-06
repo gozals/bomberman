@@ -1,6 +1,8 @@
 # Bomberman
 
-HTML5 and JavaScript bomberman clone
+HTML5 and JavaScript bomberman clone.
+
+![Bomberman](screenshot.png)
 
 ## To-do
 
