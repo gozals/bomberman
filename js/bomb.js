@@ -31,42 +31,65 @@ Bomb.prototype.explode = function() {
     // Destroy surrounding blocks
     var bomb_y = this.y/block_size;
     var bomb_x = this.x/block_size;
-
+    var radius_left=this.radius;
+    var radius_right =this.radius;
+    var radius_up=this.radius;
+    var radius_down=this.radius;
     // Destroy above block
     for (var i = 1; i <= this.radius; i++)
         if (board[(bomb_y-1*i)][bomb_x] == 1) {
             board[(bomb_y-1*i)][bomb_x] = 0;
+            radius_up=i;
             break;
-        }
-        else
+        } 
+        else if (board[(bomb_y-1*i)][bomb_x] == 2){
+            radius_up=i;
             break;
+        }/*else {
+            break;
+        }*/
 
     // Destroy left blocks
     for (var i = 1; i <= this.radius; i++) 
         if (board[bomb_y][(bomb_x-1*i)] == 1) {
             board[bomb_y][(bomb_x-1*i)] = 0;
+            radius_left=i;
+            break;
+        }else if (board[bomb_y][(bomb_x-1*i)] == 2){
+            radius_left=i;
             break;
         }
-        else
+        /*else{
             break;
+        }*/
 
     // Destroy below blocks
     for (var i = 1; i <= this.radius; i++)
         if (board[(bomb_y+1*i)][bomb_x] == 1) {
             board[(bomb_y+1*i)][bomb_x] = 0;
+            radius_down=i;
+            break;
+        }else if (board[(bomb_y+1*i)][bomb_x] == 2){
+            radius_down=i;
             break;
         }
-        else
+        /*else{
             break;
+        }*/
 
     // Destroy right blocks
     for (var i = 1; i <= this.radius; i++)
         if (board[bomb_y][(bomb_x+1*i)] == 1) {
             board[bomb_y][(bomb_x+1*i)] = 0;
+            radius_right=i;
+            break;
+        }else if (board[bomb_y][(bomb_x+1*i)] == 2){
+            radius_right=i;
             break;
         }
-        else
+        /*else{
             break;
+        }*/
 
     // Kill players
     for (var i = 0; i < player.length; i++) {
@@ -75,7 +98,7 @@ Bomb.prototype.explode = function() {
         var radius = player[i].bomb_radius;
 
         if (player_x == bomb_x || player_y == bomb_y)     // player on the same x-axis or y-axis as the bomb
-            if ( (player_x >= bomb_x-1*radius && player_x <= bomb_x+1*radius) && (player_y >= bomb_y-1*radius && player_y <= bomb_y+1*radius))      // player inside the radius of the explosion
+            if ( (player_x >= bomb_x-1*radius_left && player_x <= bomb_x+1*radius_right) && (player_y >= bomb_y-1*radius_down && player_y <= bomb_y+1*radius_up))      // player inside the radius of the explosion
                 player[i].kill();        
     }
 
