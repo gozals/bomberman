@@ -17,6 +17,7 @@ var black_bomberman;
 var red_bomberman;
 var blue_bomberman;
 var bomb_sprite;
+var explosion_sprite;
 
 init();
 main();
@@ -34,6 +35,12 @@ function init() {
     WIDTH = $("#canvas").width();
     HEIGHT = $("#canvas").height();
 
+    // For some reason, the canvas dimensions differ for different browser zooms
+    if (WIDTH != 600)
+        WIDTH = 600;
+    if (HEIGHT != 600)
+        HEIGHT = 600;
+
     // Disable smoothness for pixelated effect
     context.webkitImageSmoothingEnabled = false;
 
@@ -46,16 +53,19 @@ function init() {
     red_bomberman = new Image();
     blue_bomberman = new Image();
     bomb_sprite = new Image();
+    explosion_sprite = new Image();
 
     white_bomberman.src = 'resources/sprites/white_bomberman.gif';
     black_bomberman.src = 'resources/sprites/black_bomberman.gif';
     red_bomberman.src = 'resources/sprites/red_bomberman.gif';
     blue_bomberman.src = 'resources/sprites/blue_bomberman.gif';
-    bomb_sprite.src = 'resources/sprites/bombs.gif'
+    bomb_sprite.src = 'resources/sprites/bombs.gif';
+    explosion_sprite.src = 'resources/sprites/explosion.gif';
 
     // Initialize players
     player[0] = new Player(white_bomberman, board, "Chafic", 0, block_size, block_size);
     player[1] = new Player(black_bomberman, board, "Rachel", 1, WIDTH-2*block_size, block_size);
+    console.log("block_size: " + HEIGHT);
     player[2] = new Player(red_bomberman, board, "Richard", 2, block_size, HEIGHT-2*block_size);
     player[3] = new Player(blue_bomberman, board, "Zouzou", 3, WIDTH-2*block_size, HEIGHT-2*block_size);
 }
@@ -84,7 +94,8 @@ function onKeyDown(evt) {
             player[0].down = true;
             break;
         case 32:    // space
-            player[0].release_bomb = true;
+            if (player[0].bombs.length < player[0].bomb_limit)
+                player[0].release_bomb = true;
             break;
         case 65:    // a
             player[1].left = true;
@@ -99,7 +110,8 @@ function onKeyDown(evt) {
             player[1].down = true;
             break;
         case 16:    // left shift
-            player[1].release_bomb = true;
+            if (player[1].bombs.length < player[1].bomb_limit)
+                player[1].release_bomb = true;
         default:
             break;
     }
@@ -108,28 +120,31 @@ function onKeyDown(evt) {
 // Update game state
 function update() {
     for (var i = 0; i < player.length; i++) {
+
+        // Remove exploded bombs (which can happen even when the player is dead)
+        if (typeof(player[i].bombs[0]) != "undefined" && player[i].bombs[0].exploded)
+            player[i].bombs.shift();
+
+        // Update bomb state (which can happen even when the player is dead)
+        for (var j = 0; j < player[i].bombs.length; j++)
+            player[i].bombs[j].update();
+
         if (player[i].alive) {
-            // Update player position and animation 
+
+            // Update player position and sprite animation 
             player[i].move();
 
-            // Update bombs state 
+            // Release new bombs
             if (player[i].release_bomb) {
-                player[i].bombs.push(new Bomb(bomb_sprite, player[i].x, player[i].y, player[i].bomb_radius));
+                player[i].bombs.push(new Bomb(bomb_sprite, explosion_sprite, player[i].x, player[i].y, player[i].bomb_radius));
                 player[i].release_bomb = false;
             }
-
-            // Remove exploded bombs 
-            if (typeof(player[i].bombs[0]) != "undefined" && player[i].bombs[0].exploded)
-                player[i].bombs.shift();
-
-            //console.log(player[i].alive);
-            if (player[i].alive == false)
-                console.log("Player " + i + " is dead!");
         }
     }
 }
 
 function draw() {
+
     // Clear screen (erase everything)
     context.clearRect(0, 0, WIDTH, HEIGHT);
 
@@ -151,6 +166,6 @@ function draw() {
 
     // Draw players
     for (var i = 0; i < player.length; i++)
-        if (player[i].alive)
+        if (player[i].alive == true)
             player[i].draw();
 }

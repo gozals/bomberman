@@ -24,6 +24,7 @@ function Player(sprite_sheet, board, name, number, x, y) {
     // Bomb information
     this.release_bomb = false;
     this.bomb_radius = 4;
+    this.bomb_limit = 3;
 
     this.alive = true;
 
@@ -72,6 +73,8 @@ Player.prototype.draw = function() {
 }
 
 Player.prototype.move = function() {
+
+    //console.log(this.x);
     
     // Update position
     if (this.left) {
