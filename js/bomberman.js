@@ -1,4 +1,3 @@
-
 // HTML5 data 
 var context;
 var WIDTH;
@@ -45,7 +44,7 @@ function init() {
     context.webkitImageSmoothingEnabled = false;
 
     // Load level map
-    board = level1;
+    board = new Board(15, 15, 1);
 
     // Load sprites
     white_bomberman = new Image();
@@ -54,6 +53,7 @@ function init() {
     blue_bomberman = new Image();
     bomb_sprite = new Image();
     explosion_sprite = new Image();
+    powerups_sprite = new Image();
 
     white_bomberman.src = 'resources/sprites/white_bomberman.gif';
     black_bomberman.src = 'resources/sprites/black_bomberman.gif';
@@ -61,13 +61,13 @@ function init() {
     blue_bomberman.src = 'resources/sprites/blue_bomberman.gif';
     bomb_sprite.src = 'resources/sprites/bombs.gif';
     explosion_sprite.src = 'resources/sprites/explosion.gif';
+    powerups_sprite.src = 'resources/sprites/power-ups.gif';
 
     // Initialize players
-    player[0] = new Player(white_bomberman, board, "Chafic", 0, block_size, block_size);
-    player[1] = new Player(black_bomberman, board, "Rachel", 1, WIDTH-2*block_size, block_size);
-    console.log("block_size: " + HEIGHT);
-    player[2] = new Player(red_bomberman, board, "Richard", 2, block_size, HEIGHT-2*block_size);
-    player[3] = new Player(blue_bomberman, board, "Zouzou", 3, WIDTH-2*block_size, HEIGHT-2*block_size);
+    player[0] = new Player(white_bomberman, "Chafic", 0, block_size, block_size);
+    player[1] = new Player(black_bomberman, "Rachel", 1, WIDTH-2*block_size, block_size);
+    player[2] = new Player(red_bomberman, "Richard", 2, block_size, HEIGHT-2*block_size);
+    player[3] = new Player(blue_bomberman, "Zouzou", 3, WIDTH-2*block_size, HEIGHT-2*block_size);
 }
 
 // Game loop
@@ -129,6 +129,14 @@ function update() {
         for (var j = 0; j < player[i].bombs.length; j++)
             player[i].bombs[j].update();
 
+        // Check if player is stepping on a power-up and have him pick it up
+        var power_up = board.board_powerups[player[i].y/block_size][player[i].x/block_size];
+        if (power_up != 0) {
+            board.board_powerups[player[i].y/block_size][player[i].x/block_size] = 0;
+            player[i].add_power_up(power_up);
+        }
+
+
         if (player[i].alive) {
 
             // Update player position and sprite animation 
@@ -151,12 +159,22 @@ function draw() {
     // Fill background
     draw_block(0, 0, WIDTH, HEIGHT, "rgba(0, 0, 0, 1)");
 
+    // Draw power_ups
+    for (var i = 0; i < board.height; i++)
+        for (var j = 0; j < board.width; j++) {
+            var powerup = board.board_powerups[i][j];
+            if (powerup != 0 && board.level[i][j] == 0) {
+                var sprite = fetch_sprite(board.powerups[powerup]);
+                context.drawImage(powerups_sprite, sprite[0], sprite[1], sprite[2], sprite[3], j*block_size, i*block_size, sprite[2]*(block_size/sprite[3]), block_size);
+            }
+        }
+
     // Draw blocks
     for (var i = 0; i < 15; i++)
         for (var j = 0; j < 15; j++)
-            if (board[j][i] == 1)
+            if (board.level[j][i] == 1)
                 draw_block(i*block_size, j*block_size, block_size, block_size, "rgba(255, 255, 255, 1)");
-            else if (board[j][i] == 2)
+            else if (board.level[j][i] == 2)
                 draw_block(i*block_size, j*block_size, block_size, block_size, "rgba(0, 255, 255, 1)");
 
     // Draw bombs
@@ -164,6 +182,7 @@ function draw() {
         for (var j = 0; j < player[i].bombs.length; j++)
             player[i].bombs[j].draw();
 
+            
     // Draw players
     for (var i = 0; i < player.length; i++)
         if (player[i].alive == true)

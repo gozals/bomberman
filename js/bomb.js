@@ -112,44 +112,44 @@ Bomb.prototype.destroy_blocks = function() {
 
     // Destroy above block
     for (var i = 1; i <= this.radius["up"]; i++)
-        if (board[(bomb_y-1*i)][bomb_x] == 1) {
-            board[(bomb_y-1*i)][bomb_x] = 0;
+        if (board.level[(bomb_y-1*i)][bomb_x] == 1) {
+            board.level[(bomb_y-1*i)][bomb_x] = 0;
             this.radius["up"] = i;
             break;
-        } else if (board[(bomb_y-1*i)][bomb_x] == 2) {
+        } else if (board.level[(bomb_y-1*i)][bomb_x] == 2) {
             this.radius["up"] = i-1;
             break;
         }
 
     // Destroy left blocks
     for (var i = 1; i <= this.radius["left"]; i++) 
-        if (board[bomb_y][(bomb_x-1*i)] == 1) {
-            board[bomb_y][(bomb_x-1*i)] = 0;
+        if (board.level[bomb_y][(bomb_x-1*i)] == 1) {
+            board.level[bomb_y][(bomb_x-1*i)] = 0;
             this.radius["left"] = i;
             break;
-        } else if (board[bomb_y][(bomb_x-1*i)] == 2) {
+        } else if (board.level[bomb_y][(bomb_x-1*i)] == 2) {
             this.radius["left"] = i-1;
             break;
         }
 
     // Destroy below blocks
     for (var i = 1; i <= this.radius["down"]; i++)
-        if (board[(bomb_y+1*i)][bomb_x] == 1) {
-            board[(bomb_y+1*i)][bomb_x] = 0;
+        if (board.level[(bomb_y+1*i)][bomb_x] == 1) {
+            board.level[(bomb_y+1*i)][bomb_x] = 0;
             this.radius["down"] = i;
             break;
-        } else if (board[(bomb_y+1*i)][bomb_x] == 2) {
+        } else if (board.level[(bomb_y+1*i)][bomb_x] == 2) {
             this.radius["down"] = i-1;
             break;
         }
 
     // Destroy right blocks
     for (var i = 1; i <= this.radius["right"]; i++)
-        if (board[bomb_y][(bomb_x+1*i)] == 1) {
-            board[bomb_y][(bomb_x+1*i)] = 0;
+        if (board.level[bomb_y][(bomb_x+1*i)] == 1) {
+            board.level[bomb_y][(bomb_x+1*i)] = 0;
             this.radius["right"] = i;
             break;
-        } else if (board[bomb_y][(bomb_x+1*i)] == 2) {
+        } else if (board.level[bomb_y][(bomb_x+1*i)] == 2) {
             this.radius["right"] = i-1;
             break;
         }

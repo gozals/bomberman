@@ -1,4 +1,11 @@
 
+function create_2D_array(rows, cols) {
+    var array = new Array(rows);
+    for (var i = 0; i < rows; i++)
+        array[i] = new Array(cols);
+    return array;
+}
+
 // Draws a rectangle with (x, y) being the top left corner coordinates and 'w' and 'h' being the width and height respectively
 function draw_block(x, y, w, h, color) {
     // Fill block 
@@ -79,6 +86,39 @@ function fetch_sprite (sprite_name) {
             break;
         case "explosion_extreme_down":
             return [36, 72, 16, 16];
+            break;
+        case "power_glove":
+            return [0, 0, 16, 16];
+            break;
+        case "boxing_glove":
+            return [18, 0, 16, 16];
+            break;
+        case "fire":
+            return [36, 0, 16, 16];
+            break;
+        case "skate":
+            return [54, 0, 16, 16];
+            break;
+        case "line_bomb":
+            return [72, 0, 16, 16];
+            break;
+        case "vest":
+            return [90, 0, 16, 16];
+            break;
+        case "skull":
+            return [108, 0, 16, 16];
+            break;
+        case "geta":
+            return [126, 0, 16, 16];
+            break;
+        case "kick":
+            return [144, 0, 16, 16];
+            break;
+        case "bomb":
+            return [162, 0, 16, 16];
+            break;
+        default:
+            console.log("Sprite name invalid");
             break;
     }
 }
