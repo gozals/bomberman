@@ -82,7 +82,6 @@ Player.prototype.move = function() {
         this.x -= block_size;
         if (board.level[this.y/block_size][this.x/block_size] >= 1)
             this.x += block_size;
-        this.left = false;
         this.direction = "left";
         this.frame["left"] = (++this.frame["left"])%3;
     }
@@ -91,7 +90,6 @@ Player.prototype.move = function() {
         this.y -= block_size;
         if (board.level[this.y/block_size][this.x/block_size] >= 1)
             this.y += block_size;
-        this.up = false;
         this.direction = "up";
         this.frame["up"] = (++this.frame["up"])%2;
     }
@@ -100,7 +98,6 @@ Player.prototype.move = function() {
         this.x += block_size;
         if (board.level[this.y/block_size][this.x/block_size] >= 1)
             this.x -= block_size;
-        this.right = false;
         this.direction = "right";
         this.frame["right"] = (++this.frame["right"])%3;
     }
@@ -109,7 +106,6 @@ Player.prototype.move = function() {
         this.y += block_size;
         if (board.level[this.y/block_size][this.x/block_size] >= 1)
             this.y -= block_size;
-        this.down = false;
         this.direction = "down";
         this.frame["down"] = (++this.frame["down"])%2;
     }

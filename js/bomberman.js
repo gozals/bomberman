@@ -117,6 +117,38 @@ function input() {
             default:
                 break;
         }
+    });
+
+    document.addEventListener('keyup', function(event) {
+        switch(event.keyCode) {
+            case 37:    // left arrow
+                player[0].left = false;
+                break;
+            case 38:    // up arrow
+                player[0].up = false;
+                break;
+            case 39:    // right arrow
+                player[0].right = false;
+                break;
+            case 40:    // down arrow
+                player[0].down = false;
+                break;
+            case 65:    // a
+                player[1].left = false;
+                break;
+            case 87:    // w
+                player[1].up = false;
+                break;
+            case 68:    // d
+                player[1].right = false;
+                break;
+            case 83:    // s
+                player[1].down = false;
+                break;
+            default:
+                break;
+
+        }
     })
 }
 
