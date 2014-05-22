@@ -4,8 +4,8 @@ function Player(sprite_sheet, name, number, x, y) {
     this.name = name;
     this.number = number;
 
-    this.sprite_width = 15;
-    this.sprite_height = 22;
+    this.sprite_width = null;
+    this.sprite_height = null;
 
     this.x = x+6;
     this.y = y;
@@ -21,9 +21,6 @@ function Player(sprite_sheet, name, number, x, y) {
     this.frame["up"] = 0;
     this.frame["right"] = 0;
     this.frame["down"] = 0;
-
-    this.sprite_width = 12;
-    this.sprite_height = 18;
 
     // Bomb information
     this.release_bomb = false;
@@ -45,55 +42,102 @@ function Player(sprite_sheet, name, number, x, y) {
 Player.prototype.move = function() {
 
     // Update position
-    if (this.left) {
+    if (this.left)
         this.x -= this.velocity;
-    }
-    else if (this.right) {
+    else if (this.right)
         this.x += this.velocity;
-    }
-    else if (this.up) {
+    else if (this.up)
         this.y -= this.velocity;
-    }
-    else if (this.down) {
+    else if (this.down)
         this.y += this.velocity;
-    }
 
-    // Collision detection (implement border sliding)
+    // Collision detection (rectify coordinates)
+    var board_x_left = convert_to_bitmap_position(this.x);
+    var board_x_right = convert_to_bitmap_position(this.x+this.sprite_width-1);
+    var board_y_up = convert_to_bitmap_position(this.y);
+    var board_y_down = convert_to_bitmap_position(this.y+this.sprite_height-1);
+
+    var top_left_collision = board.level[board_y_up][board_x_left] >= 1;
+    var top_right_collision = board.level[board_y_up][board_x_right] >= 1;
+    var bottom_left_collision = board.level[board_y_down][board_x_left] >= 1;
+    var bottom_right_collision = board.level[board_y_down][board_x_right] >= 1;
+
     if (this.left) {
-        var board_x = Math.floor(this.x/block_size);
-        var board_y1 = Math.floor(this.y/block_size);
-        var board_y2 = Math.floor((this.y+this.sprite_height-1)/block_size);
-
-        if (board.level[board_y1][board_x] >= 1 || board.level[board_y2][board_x] >= 1)
+        if (top_left_collision || bottom_left_collision) {
             this.x += this.velocity;
+            board_x_left = convert_to_bitmap_position(this.x);
+        }
     }
 
     else if (this.right) {
-        var board_x = Math.floor((this.x + this.sprite_width)/block_size);
-        var board_y1 = Math.floor(this.y/block_size);
-        var board_y2 = Math.floor((this.y+this.sprite_height-1)/block_size);
-
-        if (board.level[board_y1][board_x] >= 1 || board.level[board_y2][board_x] >= 1)
+        if (top_right_collision || bottom_right_collision) {
             this.x -= this.velocity;
+            board_x_right = convert_to_bitmap_position(this.x+this.sprite_width-1);
+        }
     }
 
     else if (this.up) {
-        var board_x1 = Math.floor(this.x/block_size);
-        var board_x2 = Math.floor((this.x+this.sprite_width-1)/block_size);
-        var board_y = Math.floor(this.y/block_size);
-
-        if (board.level[board_y][board_x1] >= 1 || board.level[board_y][board_x2] >= 1)
+        if (top_left_collision || top_right_collision) {
             this.y += this.velocity;
+            board_y_up = convert_to_bitmap_position(this.y);
+        }
+    }
+
+    else if (this.down) {
+        if (bottom_left_collision || bottom_right_collision) {
+            this.y -= this.velocity;
+            board_y_down = convert_to_bitmap_position(this.y+this.sprite_height-1);
+        }
     }
 
 
-    else if (this.down) {
-        var board_x1 = Math.floor(this.x/block_size);
-        var board_x2 = Math.floor((this.x+this.sprite_width-1)/block_size);
-        var board_y = Math.floor((this.y+this.sprite_height)/block_size);
+    // Slide on corners
+    if (this.left) {
+        if (top_left_collision) {
+            if (board.level[board_y_up+1][board_x_left] == 0 && board.level[board_y_up+1][board_x_left-1] == 0)
+                this.y++;
+        }
 
-        if (board.level[board_y][board_x1] >= 1 || board.level[board_y][board_x2] >= 1)
-            this.y -= this.velocity;
+        else if (bottom_left_collision) {
+            if (board.level[board_y_down-1][board_x_left] == 0 && board.level[board_y_down-1][board_x_left-1] == 0)
+                this.y--;
+        }
+    }
+
+    else if (this.right) {
+        if (top_right_collision) {
+            if (board.level[board_y_up+1][board_x_right] == 0 && board.level[board_y_up+1][board_x_right+1] == 0)
+                this.y++;
+        }
+
+        else if (bottom_right_collision) {
+            if (board.level[board_y_down-1][board_x_right] == 0 && board.level[board_y_down-1][board_x_right+1] == 0)
+                this.y--;
+        }
+    }
+
+    else if (this.up) {
+        if (top_left_collision) {
+            if (board.level[board_y_up][board_x_left+1] == 0 && board.level[board_y_up-1][board_x_left+1] == 0) 
+                this.x++;
+        }
+
+        else if (top_right_collision) {
+            if (board.level[board_y_up][board_x_right-1] == 0 && board.level[board_y_up-1][board_x_right-1] == 0)
+                this.x--;
+        }
+    }
+        
+    else if (this.down) {
+        if (bottom_left_collision) {
+            if (board.level[board_y_down][board_x_left+1] == 0 && board.level[board_y_down+1][board_x_left+1] == 0)
+                this.x++;
+        }
+
+        else if (bottom_right_collision) {
+            if (board.level[board_y_down][board_x_right-1] == 0 && board.level[board_y_down+1][board_x_right-1] == 0)
+                this.x--;
+        }
     }
 
     // Update animation frames 
@@ -158,7 +202,7 @@ Player.prototype.draw = function() {
 
     }
 
-    this.sprite_width = sprite[2]*(block_size/sprite[3]);
+    this.sprite_width = Math.floor(sprite[2]*(block_size/sprite[3]));
     this.sprite_height = block_size;
     context.drawImage(this.sprite_sheet, sprite[0], sprite[1], sprite[2], sprite[3], this.x, this.y, this.sprite_width, block_size);
 }
