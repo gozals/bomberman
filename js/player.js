@@ -3,7 +3,11 @@ function Player(sprite_sheet, name, number, x, y) {
     this.sprite_sheet = sprite_sheet;
     this.name = name;
     this.number = number;
-    this.x = x;
+
+    this.sprite_width = 15;
+    this.sprite_height = 22;
+
+    this.x = x+6;
     this.y = y;
 
     this.left = false;
@@ -33,82 +37,130 @@ function Player(sprite_sheet, name, number, x, y) {
 
     // Released bombs
     this.bombs = [];
-}
 
-Player.prototype.draw = function() {
-    var sprite = [];
+    this.velocity = 3;
 
-    switch (this.direction) {
-        case "left": 
-            if (this.frame["left"] == 0)
-                sprite = fetch_sprite("horizontal_walk_1");
-            else if (this.frame["left"] == 1)
-                sprite = fetch_sprite("horizontal_walk_2");
-            else if (this.frame["left"] == 2)
-                sprite = fetch_sprite("horizontal_walk_3");
-            break;
-
-        case "up":
-            if (this.frame["up"] == 0)
-                sprite = fetch_sprite("vertical_walk_3");
-            else if (this.frame["up"] == 1)
-                sprite = fetch_sprite("vertical_walk_4");
-            break;
-
-        case "right":
-            if (this.frame["right"] == 0)
-                sprite = fetch_sprite("horizontal_walk_4");
-            else if (this.frame["right"] == 1)
-                sprite = fetch_sprite("horizontal_walk_5");
-            else if (this.frame["right"] == 2)
-                sprite = fetch_sprite("horizontal_walk_6");
-            break;
-
-        case "down":
-            if (this.frame["down"] == 0)
-                sprite = fetch_sprite("vertical_walk_1");
-            else if (this.frame["down"] == 1)
-                sprite = fetch_sprite("vertical_walk_2");
-            break;
-    }
-
-    context.drawImage(this.sprite_sheet, sprite[0], sprite[1], sprite[2], sprite[3], this.x+7, this.y, sprite[2]*(block_size/sprite[3]), block_size);
 }
 
 Player.prototype.move = function() {
 
     // Update position
     if (this.left) {
-        this.x -= block_size;
-        if (board.level[this.y/block_size][this.x/block_size] >= 1)
-            this.x += block_size;
-        this.direction = "left";
-        this.frame["left"] = (++this.frame["left"])%3;
+        this.x -= this.velocity;
+    }
+    else if (this.right) {
+        this.x += this.velocity;
+    }
+    else if (this.up) {
+        this.y -= this.velocity;
+    }
+    else if (this.down) {
+        this.y += this.velocity;
     }
 
-    else if (this.up) {
-        this.y -= block_size;
-        if (board.level[this.y/block_size][this.x/block_size] >= 1)
-            this.y += block_size;
-        this.direction = "up";
-        this.frame["up"] = (++this.frame["up"])%2;
+    // Collision detection (implement border sliding)
+    if (this.left) {
+        var board_x = Math.floor(this.x/block_size);
+        var board_y1 = Math.floor(this.y/block_size);
+        var board_y2 = Math.floor((this.y+this.sprite_height-1)/block_size);
+
+        if (board.level[board_y1][board_x] >= 1 || board.level[board_y2][board_x] >= 1)
+            this.x += this.velocity;
     }
 
     else if (this.right) {
-        this.x += block_size;
-        if (board.level[this.y/block_size][this.x/block_size] >= 1)
-            this.x -= block_size;
-        this.direction = "right";
-        this.frame["right"] = (++this.frame["right"])%3;
+        var board_x = Math.floor((this.x + this.sprite_width)/block_size);
+        var board_y1 = Math.floor(this.y/block_size);
+        var board_y2 = Math.floor((this.y+this.sprite_height-1)/block_size);
+
+        if (board.level[board_y1][board_x] >= 1 || board.level[board_y2][board_x] >= 1)
+            this.x -= this.velocity;
     }
 
-    else if (this.down) {
-        this.y += block_size;
-        if (board.level[this.y/block_size][this.x/block_size] >= 1)
-            this.y -= block_size;
-        this.direction = "down";
-        this.frame["down"] = (++this.frame["down"])%2;
+    else if (this.up) {
+        var board_x1 = Math.floor(this.x/block_size);
+        var board_x2 = Math.floor((this.x+this.sprite_width-1)/block_size);
+        var board_y = Math.floor(this.y/block_size);
+
+        if (board.level[board_y][board_x1] >= 1 || board.level[board_y][board_x2] >= 1)
+            this.y += this.velocity;
     }
+
+
+    else if (this.down) {
+        var board_x1 = Math.floor(this.x/block_size);
+        var board_x2 = Math.floor((this.x+this.sprite_width-1)/block_size);
+        var board_y = Math.floor((this.y+this.sprite_height)/block_size);
+
+        if (board.level[board_y][board_x1] >= 1 || board.level[board_y][board_x2] >= 1)
+            this.y -= this.velocity;
+    }
+
+    // Update animation frames 
+    if (this.left) {
+        this.direction = "left";
+        this.frame["left"] = (++this.frame["left"])%13;
+    }
+    else if (this.right) {
+        this.direction = "right";
+        this.frame["right"] = (++this.frame["right"])%13;
+    }
+    else if (this.up) {
+        this.direction = "up";
+        this.frame["up"] = (++this.frame["up"])%9;
+    }
+    else if (this.down) {
+        this.direction = "down";
+        this.frame["down"] = (++this.frame["down"])%9;
+    }
+}
+
+
+Player.prototype.draw = function() {
+
+    var sprite = [];
+
+    switch (this.direction) {
+        case "left": 
+            if (this.frame["left"] <= 4)
+                sprite = fetch_sprite("horizontal_walk_1");
+            else if (this.frame["left"] <= 8)
+                sprite = fetch_sprite("horizontal_walk_2");
+            else if (this.frame["left"] <= 12)
+                sprite = fetch_sprite("horizontal_walk_3");
+            break;
+
+        case "up":
+            if (this.frame["up"] <= 4)
+                sprite = fetch_sprite("vertical_walk_3");
+            else if (this.frame["up"] <= 8)
+                sprite = fetch_sprite("vertical_walk_4");
+            break;
+
+        case "right":
+            if (this.frame["right"] <= 4)
+                sprite = fetch_sprite("horizontal_walk_4");
+            else if (this.frame["right"] <= 8)
+                sprite = fetch_sprite("horizontal_walk_5");
+            else if (this.frame["right"] <= 12)
+                sprite = fetch_sprite("horizontal_walk_6");
+            break;
+
+        case "down":
+            if (this.frame["down"] <= 4)
+                sprite = fetch_sprite("vertical_walk_1");
+            else if (this.frame["down"] <= 8)
+                sprite = fetch_sprite("vertical_walk_2");
+            break;
+        default:
+            sprite = fetch_sprite("horizontal_walk_1");
+            break;
+
+    }
+
+    this.sprite_width = sprite[2]*(block_size/sprite[3]);
+    this.sprite_height = block_size;
+    context.drawImage(this.sprite_sheet, sprite[0], sprite[1], sprite[2], sprite[3], this.x, this.y, this.sprite_width, block_size);
 }
 
 Player.prototype.kill = function() {
@@ -134,6 +186,7 @@ Player.prototype.add_power_up = function(power_up) {
         case 4:
             // Increases player's speed by 1
             console.log("skate");
+            this.velocity++;
             break;
         case 5:
             // Releases a line of bomb
@@ -153,6 +206,8 @@ Player.prototype.add_power_up = function(power_up) {
         case 8:
             // Decreases the player's speed by 1
             console.log("geta");
+            if (this.velocity > 1)
+                this.velocity--;
             break;
         case 9:
             // Gives the ability to "kick" bombs by walking into them, which sends the bomb sliding across the stage until it collides with a wall, player, or another bomb

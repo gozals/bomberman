@@ -165,9 +165,11 @@ function update() {
             player[i].bombs[j].update();
 
         // Check if player is stepping on a power-up and have him pick it up
-        var power_up = board.board_powerups[player[i].y/block_size][player[i].x/block_size];
+        var board_x = convert_to_bitmap_position(player[i].x + player[i].sprite_width/2);
+        var board_y = convert_to_bitmap_position(player[i].y + player[i].sprite_height/2);
+        var power_up = board.board_powerups[board_y][board_x];
         if (power_up != 0) {
-            board.board_powerups[player[i].y/block_size][player[i].x/block_size] = 0;
+            board.board_powerups[board_y][board_x] = 0;
             player[i].add_power_up(power_up);
         }
 
@@ -179,7 +181,13 @@ function update() {
 
             // Release new bombs
             if (player[i].release_bomb) {
-                player[i].bombs.push(new Bomb(bomb_sprite, explosion_sprite, player[i].x, player[i].y, player[i].bomb_radius));
+                var x_bomb = convert_to_bitmap_position(player[i].x + player[i].sprite_width/2)*block_size;
+                var y_bomb = convert_to_bitmap_position(player[i].y + player[i].sprite_height/2)*block_size;
+                player[i].bombs.push(new Bomb(bomb_sprite,
+                            explosion_sprite,
+                            x_bomb,
+                            y_bomb,
+                            player[i].bomb_radius));
                 player[i].release_bomb = false;
             }
         }

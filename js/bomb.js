@@ -1,11 +1,11 @@
 
-function Bomb(bomb_sprite, explosion_sprite, x, y, radius) {
+function Bomb(bomb_sprite, explosion_sprite, block_x, block_y, radius) {
 
     // Inialize class variables
     this.bomb_sprite = bomb_sprite;
     this.explosion_sprite = explosion_sprite;
-    this.x = x;
-    this.y = y;
+    this.x = block_x;
+    this.y = block_y;
 
     this.radius = [];
     this.radius["left"] = radius;
@@ -160,8 +160,8 @@ Bomb.prototype.kill_players = function() {
     var bomb_y = this.y/block_size;
 
     for (var i = 0; i < 4; i++) {
-        var player_x = player[i].x/block_size;
-        var player_y = player[i].y/block_size;
+        var player_x = convert_to_bitmap_position(player[i].x+player[i].sprite_width/2);
+        var player_y = convert_to_bitmap_position(player[i].y+player[i].sprite_height/2);
 
         if (player_y == bomb_y || player_x == bomb_x) {     // player on the same x-axis or y-axis as the bomb
             if ( (player_x >= bomb_x-1*this.radius["left"] && player_x <= bomb_x+1*this.radius["right"]) &&

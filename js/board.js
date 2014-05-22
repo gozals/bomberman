@@ -28,7 +28,7 @@ function Board(width, height, level_number) {
 Board.prototype.load_power_ups = function() {
     for (var i = 0; i < this.height; i++)
         for (var j = 0; j < this.width; j++) {
-            if (Math.floor(Math.random()*7) == 0 && this.level[i][j] == 1)
+            if (Math.floor(Math.random()*5) == 0 && this.level[i][j] == 1)
                 this.board_powerups[i][j] = Math.floor(Math.random()*10)+1;
             else
                 this.board_powerups[i][j] = 0;

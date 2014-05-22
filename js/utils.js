@@ -1,4 +1,8 @@
 
+function convert_to_bitmap_position(i) {
+    return Math.floor(i/block_size) 
+}
+
 function create_2D_array(rows, cols) {
     var array = new Array(rows);
     for (var i = 0; i < rows; i++)
