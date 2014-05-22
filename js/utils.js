@@ -32,28 +32,34 @@ function fetch_sprite (sprite_name) {
             return [15, 0, 15, 22];
             break;
         case "vertical_walk_3":
-            return [30, 0, 15, 22];
+            return [29, 0, 15, 22];
             break;
         case "vertical_walk_4":
-            return [45, 0, 15, 22];
+            return [44, 0, 15, 22];
             break;
-        case "horizontal_walk_1":
-            return [60, 0, 15, 22];
+        case "vertical_walk_5":
+            return [59, 0, 15, 22];
             break;
-        case "horizontal_walk_2":
+        case "vertical_walk_6":
             return [74, 0, 15, 22];
             break;
+        case "horizontal_walk_1":
+            return [89, 0, 15, 22];
+            break;
+        case "horizontal_walk_2":
+            return [103, 0, 15, 22];
+            break;
         case "horizontal_walk_3":
-            return [88, 0, 15, 22];
+            return [117, 0, 15, 22];
             break;
         case "horizontal_walk_4":
-            return [102, 0, 15, 22];
+            return [131, 0, 15, 22];
             break;
         case "horizontal_walk_5":
-            return [116, 0, 15, 22];
+            return [145, 0, 15, 22];
             break;
         case "horizontal_walk_6":
-            return [130, 0, 15, 22];
+            return [159, 0, 15, 22];
             break;
         case "bomb_small":
             return [0, 1, 14, 16];

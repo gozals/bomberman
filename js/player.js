@@ -151,11 +151,11 @@ Player.prototype.move = function() {
     }
     else if (this.up) {
         this.direction = "up";
-        this.frame["up"] = (++this.frame["up"])%9;
+        this.frame["up"] = (++this.frame["up"])%13;
     }
     else if (this.down) {
         this.direction = "down";
-        this.frame["down"] = (++this.frame["down"])%9;
+        this.frame["down"] = (++this.frame["down"])%13;
     }
 }
 
@@ -176,9 +176,11 @@ Player.prototype.draw = function() {
 
         case "up":
             if (this.frame["up"] <= 4)
-                sprite = fetch_sprite("vertical_walk_3");
-            else if (this.frame["up"] <= 8)
                 sprite = fetch_sprite("vertical_walk_4");
+            else if (this.frame["up"] <= 8)
+                sprite = fetch_sprite("vertical_walk_5");
+            else if (this.frame["up"] <= 12)
+                sprite = fetch_sprite("vertical_walk_6");
             break;
 
         case "right":
@@ -195,6 +197,8 @@ Player.prototype.draw = function() {
                 sprite = fetch_sprite("vertical_walk_1");
             else if (this.frame["down"] <= 8)
                 sprite = fetch_sprite("vertical_walk_2");
+            else if (this.frame["down"] <= 12)
+                sprite = fetch_sprite("vertical_walk_3");
             break;
         default:
             sprite = fetch_sprite("horizontal_walk_1");
