@@ -41,7 +41,7 @@ function init() {
     if (HEIGHT != 600)
         HEIGHT = 600;
 
-    // Disable smoothness for pixelated effect
+    // Disab/le smoothness for pixelated effect
     context.webkitImageSmoothingEnabled = false;
 
     // Load level map
@@ -69,54 +69,67 @@ function init() {
     player[1] = new Player(black_bomberman, "Rachel", 1, WIDTH-2*block_size, block_size);
     player[2] = new Player(red_bomberman, "Richard", 2, block_size, HEIGHT-2*block_size);
     player[3] = new Player(blue_bomberman, "Zouzou", 3, WIDTH-2*block_size, HEIGHT-2*block_size);
+
+    paused = false;
+    input();
 }
 
 // Game loop
 function main() {
     requestAnimationFrame(main);
-    input();
     update();
     draw();
+    if (paused) {
+        var pause_width = 140;
+        var pause_height = 30;
+        draw_block((WIDTH-pause_width)/2, (HEIGHT-pause_height)/2, pause_width, pause_height, "rgba(100, 100, 100, 1)");
+
+        context.fillStyle = "rgba(255, 255, 255, 1)";
+        context.font="25px Open Sans";
+        context.fillText("PAUSE", (WIDTH-pause_width)/2+30, (HEIGHT-pause_height)/2+25, 500);
+    }
 }
 
 // Handle input 
 function input() {
     document.addEventListener('keydown', function(event) {
-        switch(event.keyCode) {
-            case 37:    // left arrow
-                player[0].left = true;
-                break;
-            case 38:    // up arrow
-                player[0].up = true;
-                break;
-            case 39:    // right arrow
-                player[0].right = true;
-                break;
-            case 40:    // down arrow
-                player[0].down = true;
-                break;
-            case 32:    // space
-                if (player[0].bombs.length < player[0].bomb_limit)
-                    player[0].release_bomb = true;
-                break;
-            case 65:    // a
-                player[1].left = true;
-                break;
-            case 87:    // w
-                player[1].up = true;
-                break;
-            case 68:    // d
-                player[1].right = true;
-                break;
-            case 83:    // s
-                player[1].down = true;
-                break;
-            case 16:    // left shift
-                if (player[1].bombs.length < player[1].bomb_limit)
-                    player[1].release_bomb = true;
-            default:
-                break;
-        }
+        if (!paused)
+            switch(event.keyCode) {
+                case 37:    // left arrow
+                    player[0].left = true;
+                    break;
+                case 38:    // up arrow
+                    player[0].up = true;
+                    break;
+                case 39:    // right arrow
+                    player[0].right = true;
+                    break;
+                case 40:    // down arrow
+                    player[0].down = true;
+                    break;
+                case 32:    // space
+                    if (player[0].bombs.length < player[0].bomb_limit)
+                        player[0].release_bomb = true;
+                    break;
+                case 65:    // a
+                    player[1].left = true;
+                    break;
+                case 87:    // w
+                    player[1].up = true;
+                    break;
+                case 68:    // d
+                    player[1].right = true;
+                    break;
+                case 83:    // s
+                    player[1].down = true;
+                    break;
+                case 16:    // left shift
+                    if (player[1].bombs.length < player[1].bomb_limit)
+                        player[1].release_bomb = true;
+                    break;
+                default:
+                    break;
+            }
     });
 
     document.addEventListener('keyup', function(event) {
@@ -145,11 +158,15 @@ function input() {
             case 83:    // s
                 player[1].down = false;
                 break;
+            case 80:    // p
+                console.log("Paused!");
+                paused = !paused;
+                break;
             default:
                 break;
-
         }
-    })
+    });
+
 }
 
 // Update game state
@@ -230,4 +247,5 @@ function draw() {
     for (var i = 0; i < player.length; i++)
         if (player[i].alive == true)
             player[i].draw();
+
 }
