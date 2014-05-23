@@ -218,50 +218,50 @@ Player.prototype.kill = function() {
 
 Player.prototype.add_power_up = function(power_up) {
     switch(power_up) {
-        case 1:
+        //case 1:
             // It gives the player the ability to pick up, carry, and then throw bombs (not yet implemented)
-            console.log("power_glove");
-            break;
-        case 2:
+            //console.log("power_glove");
+            //break;
+        //case 2:
             // Allows player to punch bombs in order to knock them away (not yet implemented)
-            console.log("boxing_glove");
-            break;
-        case 3:
+            //console.log("boxing_glove");
+            //break;
+        case 1:
             // Increases fire range by 1
             console.log("fire");
             this.bomb_radius++;
             break;
-        case 4:
+        case 2:
             // Increases player's speed by 1
             console.log("skate");
             this.velocity++;
             break;
-        case 5:
+        //case 5:
             // Releases a line of bomb
-            console.log("line_bomb");
-            break;
-        case 6:
+            //console.log("line_bomb");
+            //break;
+        //case 6:
             // Player is immune to all dangers for a fixed period of time
-            this.invincible = true;
-            break;
-        case 7:
+            //this.invincible = true;
+            //break;
+        //case 7:
             // Gets one of the following "bad" effects for a fixed period of time:
             // Dizzy: controls are switched, left becomes right and up becomes down
             // Constipation: player unable to set bombs
             // Diarrhea: player continuously sets bombs when possible
-            console.log("skull");
-            break;
-        case 8:
+            //console.log("skull");
+            //break;
+        case 3:
             // Decreases the player's speed by 1
             console.log("geta");
             if (this.velocity > 1)
                 this.velocity--;
             break;
-        case 9:
+        //case 9:
             // Gives the ability to "kick" bombs by walking into them, which sends the bomb sliding across the stage until it collides with a wall, player, or another bomb
-            console.log("kick");
-            break;
-        case 10:
+            //console.log("kick");
+            //break;
+        case 4:
             // Increases the player's number of bombs by 1
             console.log("bomb");
             this.bomb_limit++;
