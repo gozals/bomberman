@@ -1,12 +1,14 @@
 
-function Bomb(bomb_sprite, explosion_sprite, block_x, block_y, radius) {
+function Bomb(bomb_sprite, explosion_sprite, x, y, radius) {
 
-    // Inialize class variables
     this.bomb_sprite = bomb_sprite;
     this.explosion_sprite = explosion_sprite;
-    this.x = block_x;
-    this.y = block_y;
 
+    // Bomb coordinates
+    this.x = x;
+    this.y = y;
+
+    // Radius of the bomb explosion, initially assumed to be unrestricted by blocks
     this.radius = [];
     this.radius["left"] = radius;
     this.radius["right"] = radius;
@@ -15,17 +17,18 @@ function Bomb(bomb_sprite, explosion_sprite, block_x, block_y, radius) {
 
     // Start bomb timer
     this.start_time = new Date();
-    this.time_elapsed = 0;
+    this.time_elapsed = null;
 
+    // Bomb state
     this.explodes = false;
-    this.exploded = false;
+    this.extinguished = false;
 
-    this.updated_bomb = false;
 }
 
 Bomb.prototype.update = function() {
     this.time_elapsed = this.get_time();
 
+    // Bomb explosion: destroy blocks once but keep killing players until explosion gets extinguished
     if (this.time_elapsed >= 2000 && this.time_elapsed < 2500) {
         if (this.explodes == false) {
             this.destroy_blocks();
@@ -33,16 +36,24 @@ Bomb.prototype.update = function() {
         }
         this.kill_players();
     }
+
+    // Indicate that the bomb exploded so that it will be removed from the player's set of released bombs
     else if (this.time_elapsed >= 2500)
-        this.exploded = true;
+        this.extinguished = true;
 }
 
 Bomb.prototype.draw = function() {
     this.time_elapsed = this.get_time();
 
+    // Draw bomb
     var sprite;
     if (this.time_elapsed <= 1000) {
         sprite = fetch_sprite("bomb_small");
+        context.drawImage(this.bomb_sprite, sprite[0], sprite[1], sprite[2], sprite[3], this.x, this.y, sprite[2]*(block_size/sprite[3]), block_size);
+    }
+
+    else if (this.time_elapsed <= 1500) {
+        sprite = fetch_sprite("bomb_medium");
         context.drawImage(this.bomb_sprite, sprite[0], sprite[1], sprite[2], sprite[3], this.x, this.y, sprite[2]*(block_size/sprite[3]), block_size);
     }
 
@@ -51,6 +62,7 @@ Bomb.prototype.draw = function() {
         context.drawImage(this.bomb_sprite, sprite[0], sprite[1], sprite[2], sprite[3], this.x, this.y, sprite[2]*(block_size/sprite[3]), block_size);
     }
 
+    // Draw bomb explosion
     else if (this.explodes) {
         // Middle explosion
         sprite = fetch_sprite("explosion_middle");
@@ -61,7 +73,7 @@ Bomb.prototype.draw = function() {
             sprite = fetch_sprite("explosion_middle_left") 
             context.drawImage(this.explosion_sprite, sprite[0], sprite[1], sprite[2], sprite[3], this.x-block_size*i, this.y, sprite[2]*(block_size/sprite[3]), block_size);
         }
-        // No indestructible wall on the left
+        // No indestructible wall on the left, draw left explosion
         if (this.radius["left"] != 0) { 
             sprite = fetch_sprite("explosion_extreme_left");
             context.drawImage(this.explosion_sprite, sprite[0], sprite[1], sprite[2], sprite[3], this.x-block_size*this.radius["left"], this.y, sprite[2]*(block_size/sprite[3]), block_size);
@@ -72,7 +84,7 @@ Bomb.prototype.draw = function() {
             sprite = fetch_sprite("explosion_middle_right") 
             context.drawImage(this.explosion_sprite, sprite[0], sprite[1], sprite[2], sprite[3], this.x+block_size*i, this.y, sprite[2]*(block_size/sprite[3]), block_size);
         }
-        // No indestructible wall on the right
+        // No indestructible wall on the right, draw right explosion
         if (this.radius["right"] != 0) {
             sprite = fetch_sprite("explosion_extreme_right");
             context.drawImage(this.explosion_sprite, sprite[0], sprite[1], sprite[2], sprite[3], this.x+block_size*this.radius["right"], this.y, sprite[2]*(block_size/sprite[3]), block_size);
@@ -83,7 +95,7 @@ Bomb.prototype.draw = function() {
             sprite = fetch_sprite("explosion_middle_up") 
             context.drawImage(this.explosion_sprite, sprite[0], sprite[1], sprite[2], sprite[3], this.x, this.y-block_size*i, sprite[2]*(block_size/sprite[3]), block_size);
         }
-        // No indestructible wall above 
+        // No indestructible wall above, draw above explosion
         if (this.radius["up"] != 0) {
             sprite = fetch_sprite("explosion_extreme_up");
             context.drawImage(this.explosion_sprite, sprite[0], sprite[1], sprite[2], sprite[3], this.x, this.y-block_size*this.radius["up"], sprite[2]*(block_size/sprite[3]), block_size);
@@ -94,7 +106,7 @@ Bomb.prototype.draw = function() {
             sprite = fetch_sprite("explosion_middle_down") 
             context.drawImage(this.explosion_sprite, sprite[0], sprite[1], sprite[2], sprite[3], this.x, this.y+block_size*i, sprite[2]*(block_size/sprite[3]), block_size);
         }
-        // No indestructible wall below 
+        // No indestructible wall below, draw lower explosion
         if (this.radius["down"] != 0) {
             sprite = fetch_sprite("explosion_extreme_down");
             context.drawImage(this.explosion_sprite, sprite[0], sprite[1], sprite[2], sprite[3], this.x, this.y+block_size*this.radius["down"], sprite[2]*(block_size/sprite[3]), block_size);
@@ -102,13 +114,12 @@ Bomb.prototype.draw = function() {
     }
 }
 
+// Destroy surrounding blocks
 Bomb.prototype.destroy_blocks = function() {
     this.time_elapsed = this.get_time();
-    this.updated_bomb = true;
 
-    // Destroy surrounding blocks
-    var bomb_y = this.y/block_size;
-    var bomb_x = this.x/block_size;
+    var bomb_y = bitmap_position(this.y);
+    var bomb_x = bitmap_position(this.x);
 
     // Destroy above block
     for (var i = 1; i <= this.radius["up"]; i++)
@@ -155,22 +166,25 @@ Bomb.prototype.destroy_blocks = function() {
         }
 }
 
+// Players who touch the fire of the detonated bomb directly die
 Bomb.prototype.kill_players = function() {
-    var bomb_x = this.x/block_size;
-    var bomb_y = this.y/block_size;
+    var bomb_x = bitmap_position(this.x);
+    var bomb_y = bitmap_position(this.y);
 
     for (var i = 0; i < 4; i++) {
-        var player_x = convert_to_bitmap_position(player[i].x+player[i].sprite_width/2);
-        var player_y = convert_to_bitmap_position(player[i].y+player[i].sprite_height/2);
+        // Coordinates of the center point of the player
+        var player_x = bitmap_position(player[i].x+player[i].sprite_width/2);
+        var player_y = bitmap_position(player[i].y+player[i].sprite_height/2);
 
         if (player_y == bomb_y || player_x == bomb_x) {     // player on the same x-axis or y-axis as the bomb
             if ( (player_x >= bomb_x-1*this.radius["left"] && player_x <= bomb_x+1*this.radius["right"]) &&
-                 (player_y <= bomb_y+1*this.radius["down"] && player_y >= bomb_y-1*this.radius["up"])) // player inside the radius of the explosion
+                 (player_y <= bomb_y+1*this.radius["down"] && player_y >= bomb_y-1*this.radius["up"])) // player within the radius of the explosion
                 player[i].kill(); 
         }
     }
 }
 
+// Returns time elapsed since bomb was dropped
 Bomb.prototype.get_time = function() {
     return new Date() - this.start_time;
 }

@@ -1,4 +1,4 @@
-// HTML5 data 
+// Canvas
 var context;
 var WIDTH;
 var HEIGHT;
@@ -23,17 +23,16 @@ main();
 
 // Initialize everything
 function init() {
-    // Get a reference to the canvas
+    // Get a reference to the canvas and indicate that we'll be working in 2D 
     var canvas = document.getElementById("canvas");
-
     context = canvas.getContext("2d");
-
-    // Block borders style
-    context.strokeStyle = "black";
 
     // Get canvas dimensions
     WIDTH = canvas.width;
     HEIGHT = canvas.height;
+
+    // Black borders (default)
+    context.strokeStyle = "black";
 
     // For some reason, the canvas dimensions differ by one pixel when zooming in or out
     if (WIDTH != 600)
@@ -41,7 +40,7 @@ function init() {
     if (HEIGHT != 600)
         HEIGHT = 600;
 
-    // Disab/le smoothness for pixelated effect
+    // Disable smoothness for pixelated effect
     context.webkitImageSmoothingEnabled = false;
 
     // Load level map
@@ -71,6 +70,7 @@ function init() {
     player[3] = new Player(blue_bomberman, "Zouzou", 3, WIDTH-2*block_size, HEIGHT-2*block_size);
 
     paused = false;
+
     input();
 }
 
@@ -82,7 +82,8 @@ function main() {
     if (paused) {
         var pause_width = 140;
         var pause_height = 30;
-        draw_block((WIDTH-pause_width)/2, (HEIGHT-pause_height)/2, pause_width, pause_height, "rgba(100, 100, 100, 1)");
+        context.fillStyle = "rgba(100, 100, 100, 1)";
+        draw_block((WIDTH-pause_width)/2, (HEIGHT-pause_height)/2, pause_width, pause_height);
 
         context.fillStyle = "rgba(255, 255, 255, 1)";
         context.font="25px Open Sans";
@@ -174,39 +175,44 @@ function update() {
     for (var i = 0; i < player.length; i++) {
 
         // Remove exploded bombs (which can happen even when the player is dead)
-        if (typeof(player[i].bombs[0]) != "undefined" && player[i].bombs[0].exploded)
+        if (typeof(player[i].bombs[0]) != "undefined" && player[i].bombs[0].extinguished)
             player[i].bombs.shift();
 
         // Update bomb state (which can happen even when the player is dead)
         for (var j = 0; j < player[i].bombs.length; j++)
             player[i].bombs[j].update();
 
-        // Check if player is stepping on a power-up and have him pick it up
-        var board_x = convert_to_bitmap_position(player[i].x + player[i].sprite_width/2);
-        var board_y = convert_to_bitmap_position(player[i].y + player[i].sprite_height/2);
-        var power_up = board.board_powerups[board_y][board_x];
-        if (power_up != 0) {
-            board.board_powerups[board_y][board_x] = 0;
-            player[i].add_power_up(power_up);
-        }
-
-
         if (player[i].alive) {
 
             // Update player position and sprite animation 
             player[i].move();
 
+            // Check if player is stepping on a power-up and have him pick it up
+            var board_x = bitmap_position(player[i].x + player[i].sprite_width/2);
+            var board_y = bitmap_position(player[i].y + player[i].sprite_height/2);
+            var power_up = board.board_powerups[board_y][board_x];
+            if (power_up != 0) {
+                board.board_powerups[board_y][board_x] = 0;
+                player[i].add_power_up(power_up);
+            }
+
             // Release new bombs
             if (player[i].release_bomb) {
-                var x_bomb = convert_to_bitmap_position(player[i].x + player[i].sprite_width/2)*block_size;
-                var y_bomb = convert_to_bitmap_position(player[i].y + player[i].sprite_height/2)*block_size;
+
+                // Bombs are placed on board tiles according to the position of the center of the player
+                var x_bomb = pixel_position(bitmap_position(player[i].x + player[i].sprite_width/2));
+                var y_bomb = pixel_position(bitmap_position(player[i].y + player[i].sprite_height/2));
+
+                // Add bomb to the player's set of "released bombs"
                 player[i].bombs.push(new Bomb(bomb_sprite,
                             explosion_sprite,
                             x_bomb,
                             y_bomb,
                             player[i].bomb_radius));
+
                 player[i].release_bomb = false;
             }
+            
         }
     }
 }
@@ -216,8 +222,9 @@ function draw() {
     // Clear screen (erase everything)
     context.clearRect(0, 0, WIDTH, HEIGHT);
 
-    // Fill background
-    draw_block(0, 0, WIDTH, HEIGHT, "rgba(0, 0, 0, 1)");
+    // Fill background with pitch black
+    context.fillStyle = "rgba(0, 0, 0, 1)";
+    draw_block(0, 0, WIDTH, HEIGHT);
 
     // Draw power_ups
     for (var i = 0; i < board.height; i++)
@@ -225,17 +232,21 @@ function draw() {
             var powerup = board.board_powerups[i][j];
             if (powerup != 0 && board.level[i][j] == 0) {
                 var sprite = fetch_sprite(board.powerups[powerup]);
-                context.drawImage(powerups_sprite, sprite[0], sprite[1], sprite[2], sprite[3], j*block_size, i*block_size, sprite[2]*(block_size/sprite[3]), block_size);
+                context.drawImage(powerups_sprite, sprite[0], sprite[1], sprite[2], sprite[3], pixel_position(j), pixel_position(i), sprite[2]*(block_size/sprite[3]), block_size);
             }
         }
 
     // Draw blocks
     for (var i = 0; i < 15; i++)
         for (var j = 0; j < 15; j++)
-            if (board.level[j][i] == 1)
-                draw_block(i*block_size, j*block_size, block_size, block_size, "rgba(255, 255, 255, 1)");
-            else if (board.level[j][i] == 2)
-                draw_block(i*block_size, j*block_size, block_size, block_size, "rgba(0, 255, 255, 1)");
+            if (board.level[j][i] == 1) {
+                context.fillStyle = "rgba(255, 255, 255, 1)";
+                draw_block(pixel_position(i), pixel_position(j), block_size, block_size);
+            }
+            else if (board.level[j][i] == 2) {
+                context.fillStyle = "rgba(0, 255, 255, 1)";
+                draw_block(pixel_position(i), pixel_position(j), block_size, block_size);
+            }
 
     // Draw bombs
     for (var i = 0; i < player.length; i++)

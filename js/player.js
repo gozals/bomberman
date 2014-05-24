@@ -1,21 +1,30 @@
 
 function Player(sprite_sheet, name, number, x, y) {
     this.sprite_sheet = sprite_sheet;
-    this.name = name;
-    this.number = number;
+    this.name = name;       // unused
+    this.number = number;   // unused
+
+    this.x = x+6;   // arbitrary addition to center the player inside the corresponding tile
+    this.y = y;
+
+    this.alive = true;
+    this.invincible = false;    // unused (waiting for "vest" to be implemented)
+
+    this.velocity = 3;
 
     this.sprite_width = null;
     this.sprite_height = null;
 
-    this.x = x+6;
-    this.y = y;
-
+    // Indicated whether player is moving in a certain direction
     this.left = false;
     this.right = false;
     this.up = false;
     this.down = false;
 
+    // Movement direction
     this.direction = "down";
+
+    // Sprite animation
     this.frame = new Array(4);
     this.frame["left"] = 0;
     this.frame["up"] = 0;
@@ -23,20 +32,11 @@ function Player(sprite_sheet, name, number, x, y) {
     this.frame["down"] = 0;
 
     // Bomb information
+    this.bombs = [];
     this.release_bomb = false;
     this.bomb_radius = 1;
     this.bomb_limit = 1;
-
-    // Power-ups
-    this.invincible = false;
-
-    this.alive = true;
-
-    // Released bombs
-    this.bombs = [];
-
-    this.velocity = 3;
-
+    
 }
 
 Player.prototype.move = function() {
@@ -51,11 +51,11 @@ Player.prototype.move = function() {
     else if (this.down)
         this.y += this.velocity;
 
-    // Collision detection (rectify coordinates)
-    var board_x_left = convert_to_bitmap_position(this.x);
-    var board_x_right = convert_to_bitmap_position(this.x+this.sprite_width-1);
-    var board_y_up = convert_to_bitmap_position(this.y);
-    var board_y_down = convert_to_bitmap_position(this.y+this.sprite_height-1);
+    // Collision detection (rectifies coordinates)
+    var board_x_left = bitmap_position(this.x);
+    var board_x_right = bitmap_position(this.x+this.sprite_width-1);
+    var board_y_up = bitmap_position(this.y);
+    var board_y_down = bitmap_position(this.y+this.sprite_height-1);
 
     var top_left_collision = board.level[board_y_up][board_x_left] >= 1;
     var top_right_collision = board.level[board_y_up][board_x_right] >= 1;
@@ -65,31 +65,30 @@ Player.prototype.move = function() {
     if (this.left) {
         if (top_left_collision || bottom_left_collision) {
             this.x += this.velocity;
-            board_x_left = convert_to_bitmap_position(this.x);
+            board_x_left = bitmap_position(this.x);
         }
     }
 
     else if (this.right) {
         if (top_right_collision || bottom_right_collision) {
             this.x -= this.velocity;
-            board_x_right = convert_to_bitmap_position(this.x+this.sprite_width-1);
+            board_x_right = bitmap_position(this.x+this.sprite_width-1);
         }
     }
 
     else if (this.up) {
         if (top_left_collision || top_right_collision) {
             this.y += this.velocity;
-            board_y_up = convert_to_bitmap_position(this.y);
+            board_y_up = bitmap_position(this.y);
         }
     }
 
     else if (this.down) {
         if (bottom_left_collision || bottom_right_collision) {
             this.y -= this.velocity;
-            board_y_down = convert_to_bitmap_position(this.y+this.sprite_height-1);
+            board_y_down = bitmap_position(this.y+this.sprite_height-1);
         }
     }
-
 
     // Slide on corners
     if (this.left) {
@@ -159,7 +158,6 @@ Player.prototype.move = function() {
     }
 }
 
-
 Player.prototype.draw = function() {
 
     var sprite = [];
@@ -203,7 +201,6 @@ Player.prototype.draw = function() {
         default:
             sprite = fetch_sprite("horizontal_walk_1");
             break;
-
     }
 
     this.sprite_width = Math.floor(sprite[2]*(block_size/sprite[3]));
@@ -211,6 +208,7 @@ Player.prototype.draw = function() {
     context.drawImage(this.sprite_sheet, sprite[0], sprite[1], sprite[2], sprite[3], this.x, this.y, this.sprite_width, block_size);
 }
 
+// Kill the player if he is not invincible
 Player.prototype.kill = function() {
     if (this.invincible == false)
         this.alive = false;

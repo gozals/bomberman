@@ -1,6 +1,12 @@
 
-function convert_to_bitmap_position(i) {
+// Converts from pixel coordinates to bitmap coordinates
+function bitmap_position(i) {
     return Math.floor(i/block_size) 
+}
+
+// Convert from bitmap coordinates to pixel coordinates
+function pixel_position(i) {
+    return i*block_size;
 }
 
 function create_2D_array(rows, cols) {
@@ -11,12 +17,11 @@ function create_2D_array(rows, cols) {
 }
 
 // Draws a rectangle with (x, y) being the top left corner coordinates and 'w' and 'h' being the width and height respectively
-function draw_block(x, y, w, h, color) {
+function draw_block(x, y, width, height) {
     // Fill block 
     context.beginPath();
-    context.rect(x, y, w, h);
+    context.rect(x, y, width, height);
     context.closePath();
-    context.fillStyle = color;
     context.fill();
 
     // Draw borders
@@ -62,13 +67,13 @@ function fetch_sprite (sprite_name) {
             return [159, 0, 15, 22];
             break;
         case "bomb_small":
-            return [0, 1, 14, 16];
+            return [0, 0, 16, 17];
             break;
         case "bomb_medium":
-            return [18, 0, 16, 16];
+            return [19, 0, 16, 17];
             break;
         case "bomb_large":
-            return [37, 0, 16, 17];
+            return [39, 0, 16, 17];
             break;
         case "explosion_middle":
             return [36, 36, 16, 16];
