@@ -137,27 +137,35 @@ function input() {
         switch(event.keyCode) {
             case 37:    // left arrow
                 player[0].left = false;
+                player[0].frame["left"] = 0;
                 break;
             case 38:    // up arrow
                 player[0].up = false;
+                player[0].frame["up"] = 0;
                 break;
             case 39:    // right arrow
                 player[0].right = false;
+                player[0].frame["right"] = 12;
                 break;
             case 40:    // down arrow
                 player[0].down = false;
+                player[0].frame["down"] = 0;
                 break;
             case 65:    // a
                 player[1].left = false;
+                player[1].frame["left"] = 0;
                 break;
             case 87:    // w
                 player[1].up = false;
+                player[1].frame["up"] = 0;
                 break;
             case 68:    // d
                 player[1].right = false;
+                player[1].frame["right"] = 12;
                 break;
             case 83:    // s
                 player[1].down = false;
+                player[1].frame["down"] = 0;
                 break;
             case 80:    // p
                 console.log("Paused!");
